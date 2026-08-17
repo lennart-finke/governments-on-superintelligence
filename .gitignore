@@ -1,0 +1,10 @@
+.env
+quotes-data.json
+# the utterance sidecar, copied in beside the payload for the same reason and
+# from the same export -- build output, never committed here
+utterances-*.json
+__pycache__/
+*.pyc
+.DS_Store
+.claude/
+runtime/

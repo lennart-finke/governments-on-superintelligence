@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Varela&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#ffffff;color:#011f54;font-family:'DM Sans',system-ui,sans-serif}
+a{color:#02358c;text-decoration-thickness:1px;text-underline-offset:2px}
+a:hover{color:#011f54}
+input,select,button{font-family:'DM Sans',system-ui,sans-serif}
+::selection{background:rgba(2,53,140,.16)}
+@keyframes ldspin{to{transform:rotate(360deg)}}
+@media (max-width:760px){
+  section.chart-row{grid-template-columns:minmax(0,1fr) !important}
+  aside.vocal-panel{display:none !important}
+}
+@media (max-width:520px){a.barmark{display:none !important}}
+button.qact{border:1px solid #e5e7eb;background:#ffffff;color:#6b7280;font-size:11.5px;font-weight:600;letter-spacing:.03em;padding:3px 9px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s}
+article:hover button.qact,button.qact:focus-visible{color:#374151;border-color:#c9ced6}
+button.qact:hover{color:#011f54;border-color:#011f54}
+/* A touch device never hovers, so its resting state is the one a pointer only
+   reaches by arriving at the card. */
+@media (hover:none){button.qact{color:#374151;border-color:#c9ced6}}
+/* the flash after a click outranks every hover state above it */
+button.qact.qact-on,article:hover button.qact.qact-on{color:#02358c;border-color:#02358c}
+blockquote.qq{cursor:pointer;transition:background .13s,box-shadow .13s}
+blockquote.qq:hover{background:rgba(1,31,84,.05);box-shadow:0 0 0 7px rgba(1,31,84,.05)}
+.utwrap{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;background:rgba(1,31,84,.38)}
+@media (min-width:640px){.utwrap{align-items:center;padding:24px}}
+.utbox{position:relative;display:flex;flex-direction:column;width:min(780px,100%);max-height:88vh;background:#ffffff;border:2px solid #011f54;box-shadow:0 18px 50px rgba(1,31,84,.25)}
+.uthead{flex:0 0 auto;padding:18px 24px 12px;border-bottom:1px solid #e5e7eb}
+.utbody{overflow-y:auto;padding:16px 24px 24px}
+/* The passage is the record's own prose, so it is set as prose: the quote's
+   display face is for the quote. */
+.utbody p{margin:0 0 13px;font-size:14.5px;line-height:1.72;text-wrap:pretty}
+.utbody p:last-child{margin-bottom:0}
+/* The reason the panel exists: where the card's words sit in the record. */
+.utbody mark{background:rgba(255,209,0,.45);color:inherit;box-shadow:0 0 0 2px rgba(255,209,0,.45)}
+/* The title's longest word is unbreakable and, in Varela, 8.17x the font size
+   across: 375.7px at the 46px setting, against 346.4px for the Source Serif 4
+   Bold it replaces. The column it sits in is the window less 2x28px of padding,
+   so both faces outgrow the page on a phone -- the old one from 402px down, this
+   one from 432px -- and the tail of the word hangs out in the right margin.
+   Rather than step it at one width, the size follows the column: 12vw - 7px is
+   the word's own slope, held shy of it by enough to keep daylight at the margin,
+   and the clamp hands back to a flat 46px above ~442px where it fits again. The
+   floor is only reached below 308px, narrower than any real device. */
+h1.masthead-title{font-size:clamp(30px,calc(12vw - 7px),46px) !important}
+@media (max-width:627px){div.headnav{justify-items:start !important}}
+img[src*="Member_of_the_European_Parliament_Sergio_Berlato"]{object-fit:contain !important;background:#ffffff}  /* Sergio Berlato */
+img[src*="S000033.jpg"]{object-fit:contain !important;background:#6b90a1}      /* Bernie Sanders */
+img[src*="C001061.jpg"]{object-fit:contain !important;background:#658a9b}      /* Emanuel Cleaver */
+img[src*="M001137.jpg"]{object-fit:contain !important;background:#708897}      /* Gregory Meeks */
+img[src*="F000479.jpg"]{object-fit:contain !important;background:#638696}      /* John Fetterman */
+img[src*="F000454.jpg"]{object-fit:contain !important;background:#658a9b}      /* Bill Foster */
+img[src*="Vasile_D%C3%AEncu"]{object-fit:contain !important;background:#d5d6d6}          /* Vasile Dincu */
+img[src*="Alessio_Butti_daticamera"]{object-fit:contain !important;background:#f7f8f8}   /* Alessio Butti */
+img[src*="Alvise_P%C3%A9rez"]{object-fit:contain !important;background:#dcdbe1}          /* Alvise Perez */
+img[src*="%E9%83%AD%E5%9C%8B%E6%96%87%E5%A7%94%E5%93%A1"]{object-fit:contain !important;background:#ffffff}  /* Kuo Kuo-wen */
+.md{max-width:720px;margin:0 auto;padding-top:30px}
+.md h1,.md h2,.md h3,.md h4{font-family:'Varela',system-ui,sans-serif;font-weight:700;line-height:1.2;text-wrap:pretty}
+.md h1{font-size:36px;margin:0 0 18px;letter-spacing:-.01em}
+.md h2{font-size:25px;margin:38px 0 12px;padding-top:16px;border-top:1px solid #e5e7eb}
+.md h3{font-size:18.5px;margin:26px 0 8px}
+.md h4{font-size:15.5px;margin:20px 0 6px}
+.md p{margin:0 0 14px;font-size:15px;line-height:1.65;color:#374151;text-wrap:pretty}
+.md ul,.md ol{margin:0 0 14px;padding-left:24px}
+.md li{font-size:15px;line-height:1.65;color:#374151;margin-bottom:6px;text-wrap:pretty}
+/* a sub-list belongs to the item above it: tight against it, and out of the
+   14px that separates a whole list from the prose after it */
+.md li ul,.md li ol{margin:5px 0 0;padding-left:22px}
+.md li li{margin-bottom:3px}
+.md ul ul{list-style-type:circle}
+.md ol ol{list-style-type:lower-alpha}
+.md blockquote{margin:0 0 16px;padding:2px 0 2px 18px;border-left:3px solid #3d5a80}
+.md blockquote p{color:#374151}
+.md blockquote :last-child{margin-bottom:0}
+.md code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;background:rgba(1,31,84,.06);padding:1.5px 5px}
+.md pre{margin:0 0 16px;padding:14px 16px;background:#ffffff;border:1px solid #e5e7eb;overflow-x:auto}
+.md pre code{background:none;padding:0;font-size:13px;line-height:1.6}
+.md hr{margin:30px 0;border:none;border-top:1px solid #e5e7eb}
+.md table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:14px;display:block;overflow-x:auto}
+.md th,.md td{text-align:left;padding:8px 12px;border-bottom:1px solid #e5e7eb;vertical-align:top}
+.md th{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#374151;border-bottom-color:#e5e7eb}
+.md a{font-weight:500}
+/* The FAQ is the same rendered Markdown, one section lower: it sits inside the
+   tracker under the directory rather than being a page of its own. So it keeps
+   the prose measure but drops the About page's centring and top padding, and
+   hangs off the same left edge as the directory above it. */
+.faq{margin:0;padding-top:0}
+.faq h3:first-child{margin-top:14px}
+</style>
+</helmet>
+<!-- The masthead's second life. Fixed rather than sticky because the thing that
+     should follow the reader down is only part of the header: the rule and the
+     live control, not the title and standfirst above them. So the header stays
+     in the flow and scrolls off, and this takes over at the exact moment its
+     last pixel leaves -- the two are never on screen together, which is what
+     keeps one wordmark and one button from reading as two. -->
+<div id="topbar" style="position:fixed;top:0;left:0;right:0;z-index:60;background:#ffffff;border-bottom:2px solid #011f54;transform:{{ barShift }};opacity:{{ barOpacity }};pointer-events:{{ barEvents }};transition:transform .24s ease,opacity .24s ease">
+  <div class="barin" style="display:flex;align-items:center;justify-content:flex-end;gap:16px;max-width:1180px;margin:0 auto;padding:10px 28px">
+    <a href="#" class="barmark" style="margin-right:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'Varela',system-ui,sans-serif;font-size:17px;font-weight:700;letter-spacing:-.01em;color:#011f54;text-decoration:none">Governments on Superintelligence</a>
+    <!-- the same one-cell pair as the masthead's, for the same reason: the bar
+         must not resize under the wordmark when the page changes -->
+    <div style="display:grid;justify-items:end;flex:none">
+      <a href="#method" style="grid-area:1/1;visibility:{{ headAbout }};display:inline-flex;align-items:center;gap:7px;padding:7px 13px 7px 11px;border:1.5px solid #011f54;font-size:12.5px;font-weight:600;color:#011f54;text-decoration:none">
+        <svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true" style="flex:none;display:block" fill="none" stroke="#011f54" strokeWidth="1.7" strokeLinecap="round"><circle cx="10" cy="10" r="8.3"></circle><circle cx="10" cy="5.95" r="0.95" fill="#011f54" stroke="none"></circle><path d="M10 9.2v5.1"></path></svg>
+        About
+      </a>
+      <a href="#" style="grid-area:1/1;visibility:{{ headBack }};display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border:1.5px solid #011f54;font-size:12.5px;font-weight:600;color:#011f54;text-decoration:none">
+        ← Back to the tracker
+      </a>
+    </div>
+  </div>
+</div>
+<div style="max-width:1180px;margin:0 auto;padding:0 28px">
+  <header id="masthead" style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:18px 30px;padding:44px 0 26px;border-bottom:2px solid #011f54">
+    <div style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px 26px;flex:1 1 0;min-width:min-content">
+      <h1 class="masthead-title" style="font-family:'Varela',system-ui,sans-serif;font-size:46px;line-height:1.05;font-weight:700;margin:0;max-width:420px;letter-spacing:-.01em">Governments on Superintelligence</h1>
+      <p style="margin:0;max-width:390px;padding-top:7px;font-size:14px;line-height:1.5;color:#374151;text-wrap:pretty">Verbatim statements by governments and officials on artificial general intelligence, superintelligence, recursive self-improvement, and existential risk from AI.</p>
+    </div>
+    <div class="headnav" style="display:grid;justify-items:end;flex:none;margin-top:4px">
+      <a href="#method" style="grid-area:1/1;visibility:{{ headAbout }};display:inline-flex;align-items:center;gap:7px;padding:9px 15px 9px 13px;border:1.5px solid #011f54;font-size:13px;font-weight:600;color:#011f54;text-decoration:none">
+        <svg width="15" height="15" viewBox="0 0 20 20" aria-hidden="true" style="flex:none;display:block" fill="none" stroke="#011f54" strokeWidth="1.7" strokeLinecap="round"><circle cx="10" cy="10" r="8.3"></circle><circle cx="10" cy="5.95" r="0.95" fill="#011f54" stroke="none"></circle><path d="M10 9.2v5.1"></path></svg>
+        About
+      </a>
+      <a href="#" style="grid-area:1/1;visibility:{{ headBack }};display:inline-flex;align-items:center;gap:7px;padding:9px 15px 9px 13px;border:1.5px solid #011f54;font-size:13px;font-weight:600;color:#011f54;text-decoration:none">
+        ← Back to the tracker
+      </a>
+    </div>
+  </header>
+
+  <sc-if value="{{ isMethod }}">
+    <div class="md">
+      <sc-if value="{{ mdLoading }}">
+        <div style="display:flex;align-items:center;gap:13px;margin-top:34px;padding:20px 26px;background:#ffffff;border:1px solid #e5e7eb">
+          <span style="flex:none;width:18px;height:18px;border-radius:50%;border:2.5px solid #e5e7eb;border-top-color:#011f54;animation:ldspin .7s linear infinite"></span>
+          <span style="font-size:14px;font-weight:600;color:#374151">Loading the method notes…</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ mdFailed }}">
+        <div style="margin-top:34px;padding:20px 26px;background:rgba(193,18,31,.06);border:1px solid rgba(193,18,31,.3)">
+          <div style="font-size:14.5px;font-weight:700;color:#c1121f;margin-bottom:4px">Couldn’t load the method notes</div>
+          <div style="font-size:13px;color:#374151">method.md failed to load. It must sit next to index.html on the server.</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ mdReady }}"><div dangerouslySetInnerHTML="{{ mdHtml }}"></div></sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isMain }}">
+  <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;align-items:center;justify-content:center;gap:13px;margin-top:24px;padding:20px 26px;background:#ffffff;border:1px solid #e5e7eb">
+      <span style="flex:none;width:18px;height:18px;border-radius:50%;border:2.5px solid #e5e7eb;border-top-color:#011f54;animation:ldspin .7s linear infinite"></span>
+      <span style="font-size:14px;font-weight:600;color:#374151">Loading the statement database…</span>
+    </div>
+  </sc-if>
+  <sc-if value="{{ loadFailed }}">
+    <div style="margin-top:24px;padding:20px 26px;background:rgba(193,18,31,.06);border:1px solid rgba(193,18,31,.3);text-align:center">
+      <div style="font-size:14.5px;font-weight:700;color:#c1121f;margin-bottom:4px">Couldn’t load the data</div>
+      <div style="font-size:13px;color:#374151">The statement database (quotes-data.json) failed to load. <button onClick="{{ retryLoad }}" style="font-size:13px;font-weight:600;color:#02358c;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px">Try again</button></div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ schemaAhead }}">
+    <div style="margin-top:24px;padding:20px 26px;background:rgba(193,18,31,.06);border:1px solid rgba(193,18,31,.3);text-align:center">
+      <div style="font-size:14.5px;font-weight:700;color:#c1121f;margin-bottom:4px">This page is out of date</div>
+      <div style="font-size:13px;color:#374151">The statement database was published in a newer format than this page can read. The site needs redeploying from its repository.</div>
+    </div>
+  </sc-if>
+  <!-- Minor version ahead: everything below still renders. Deliberately quieter
+       than the error above -- the corpus is intact, some newer tag may just be
+       showing without its label. -->
+  <sc-if value="{{ minorAhead }}">
+    <div style="margin-top:24px;padding:12px 18px;background:rgba(1,31,84,.05);border:1px solid rgba(1,31,84,.15)">
+      <div style="font-size:12.5px;color:#374151">This page was built for an earlier version of the statement database. Everything is shown, but newly added tags may appear without a label until the site is redeployed.</div>
+    </div>
+  </sc-if>
+
+  <!-- Filter bar. The chips carry z-index:1 so they stay clickable over
+       the click-away backdrop (z-index:0), which the popovers in turn clear. -->
+  <div style="position:relative;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:22px 0 6px;opacity:{{ mainOpacity }};transition:opacity .35s">
+    <sc-if value="{{ popOpen }}">
+      <div onClick="{{ closePop }}" style="position:fixed;inset:0;z-index:0"></div>
+    </sc-if>
+    <span style="position:relative;z-index:1;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#6b7280">Filters</span>
+
+    <sc-for list="{{ filterChips }}" as="fc" hint-placeholder-count="2">
+      <span style="position:relative;z-index:1;display:inline-flex;align-items:stretch;border:1.5px {{ fc.borderStyle }} {{ fc.border }};background:{{ fc.bg }};color:{{ fc.fg }};overflow:hidden">
+        <button onClick="{{ fc.onToggle }}" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:none;background:none;color:inherit;font-size:12.5px;font-weight:600;cursor:pointer">
+          <span style="opacity:.72">{{ fc.label }}</span>{{ fc.valueText }}<span style="font-size:15px;line-height:1;opacity:.85">▾</span>
+        </button>
+        <button onClick="{{ fc.onClear }}" title="{{ fc.clearTitle }}" style="padding:0 10px 0 2px;border:none;background:none;color:inherit;opacity:.55;font-size:14px;line-height:1;cursor:pointer">×</button>
+      </span>
+      <sc-if value="{{ fc.isOpen }}">
+        <div style="position:absolute;top:100%;left:0;margin-top:8px;z-index:10;min-width:280px;max-width:min(420px,calc(100vw - 56px));background:#ffffff;border:1px solid #e5e7eb;box-shadow:0 10px 30px rgba(1,31,84,.14);padding:12px 13px 11px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#6b7280;margin-bottom:8px">{{ fc.label }}</div>
+          <sc-if value="{{ fc.searchable }}">
+            <input value="{{ optSearch }}" onChange="{{ onOptSearch }}" placeholder="{{ fc.searchHint }}" style="width:100%;box-sizing:border-box;padding:6px 9px;margin-bottom:8px;border:1px solid #e5e7eb;font-size:12.5px;background:rgba(1,31,84,.04);outline-color:#02358c">
+          </sc-if>
+          <div style="display:flex;justify-content:space-between;gap:10px;font-size:11.5px;font-weight:600;border-bottom:1px solid #e5e7eb;padding-bottom:7px;margin-bottom:6px">
+            <sc-if value="{{ fc.canSelectAll }}"><button onClick="{{ fc.selectAll }}" style="background:none;border:none;padding:0;color:#02358c;font-weight:600;font-size:11.5px;cursor:pointer">Select all</button></sc-if>
+            <span style="flex:1"></span>
+            <button onClick="{{ fc.clearAll }}" style="background:none;border:none;padding:0;color:#c1121f;font-weight:600;font-size:11.5px;cursor:pointer">Clear</button>
+          </div>
+          <div style="max-height:274px;overflow-y:auto;display:flex;flex-direction:column;gap:1px;margin:0 -3px">
+            <sc-for list="{{ fc.options }}" as="op" hint-placeholder-count="5">
+              <button onClick="{{ op.onClick }}" aria-pressed="{{ op.on }}" style="display:flex;align-items:center;gap:9px;width:100%;text-align:left;padding:5px 7px;border:none;cursor:pointer;font-size:12.5px;background:{{ op.rowBg }};color:{{ op.rowFg }}">
+                <span style="flex:none;width:14px;height:14px;border-radius:{{ op.boxRadius }};box-sizing:border-box;border:1.5px solid {{ op.boxBorder }};background:{{ op.boxBg }};color:#ffffff;font-size:9.5px;line-height:11px;font-weight:700;text-align:center">{{ op.mark }}</span>
+                <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ op.label }}</span>
+                <span style="flex:none;font-size:11.5px;color:#6b7280;font-variant-numeric:tabular-nums">{{ op.count }}</span>
+              </button>
+            </sc-for>
+            <sc-if value="{{ fc.noOptions }}"><div style="padding:10px 7px;font-size:12.5px;color:#6b7280">No matching options.</div></sc-if>
+          </div>
+          <sc-if value="{{ fc.truncated }}"><div style="padding-top:8px;margin-top:6px;border-top:1px solid #e5e7eb;font-size:11.5px;color:#6b7280">{{ fc.truncatedText }}</div></sc-if>
+        </div>
+      </sc-if>
+    </sc-for>
+
+    <button onClick="{{ toggleAdd }}" style="position:relative;z-index:1;display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border:1.5px dashed #02358c;background:none;color:#02358c;font-size:12.5px;font-weight:600;cursor:pointer"><span style="font-size:16px;line-height:1;font-weight:500">+</span>Add filter</button>
+    <sc-if value="{{ addOpen }}">
+      <div style="position:absolute;top:100%;left:0;margin-top:8px;z-index:10;min-width:230px;background:#ffffff;border:1px solid #e5e7eb;box-shadow:0 10px 30px rgba(1,31,84,.14);padding:12px 13px 11px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#6b7280;margin-bottom:8px">Add filter</div>
+        <div style="display:flex;flex-direction:column;gap:1px;margin:0 -3px">
+          <sc-for list="{{ addOptions }}" as="ao" hint-placeholder-count="4">
+            <button onClick="{{ ao.onClick }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;padding:6px 7px;border:none;background:none;color:#011f54;font-size:12.5px;font-weight:500;cursor:pointer">
+              {{ ao.label }}<span style="font-size:11.5px;color:#6b7280">{{ ao.hint }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ noAddOptions }}"><div style="padding:4px 7px;font-size:12.5px;color:#6b7280">Every filter is already in use.</div></sc-if>
+      </div>
+    </sc-if>
+
+    <span style="position:relative;z-index:1;font-size:12.5px;color:#6b7280">{{ matchText }}</span>
+    <sc-if value="{{ anyFilter }}"><button onClick="{{ resetFilters }}" style="position:relative;z-index:1;padding:0 4px;font-size:12.5px;font-weight:600;color:#c1121f;background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:2px">Reset filters</button></sc-if>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:7px;padding:14px 0 26px;opacity:{{ mainOpacity }};transition:opacity .35s">
+    <sc-for list="{{ jurChips }}" as="jc" hint-placeholder-count="8">
+      <button onClick="{{ jc.onClick }}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid {{ jc.border }};background:{{ jc.bg }};color:{{ jc.fg }}">
+        <img src="{{ jc.flag }}" alt="" style="width:{{ jc.fw }}px;height:13px;object-fit:cover;box-shadow:0 0 0 1px #e5e7eb">{{ jc.label }}<span style="font-weight:400;opacity:.6">{{ jc.count }}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <section class="chart-row" style="display:grid;grid-template-columns:minmax(0,2.2fr) minmax(240px,1fr);gap:34px;align-items:start;opacity:{{ mainOpacity }};transition:opacity .35s">
+    <div>
+      <h2 style="font-family:'Varela',system-ui,sans-serif;font-size:23px;font-weight:700;margin:0 0 14px">Cumulative mentions over time</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px">
+        <sc-for list="{{ legend }}" as="lg" hint-placeholder-count="4">
+          <button onClick="{{ lg.onClick }}" title="Hide or show this line" style="display:inline-flex;align-items:center;gap:7px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid #e5e7eb;background:{{ lg.bg }};color:{{ lg.fg }}">
+            <span style="width:9px;height:9px;border-radius:50%;background:{{ lg.dot }}"></span>{{ lg.label }}<span style="font-weight:400;opacity:.65">{{ lg.count }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <div style="position:relative;background:#ffffff;border:1px solid #e5e7eb;padding:14px 10px 6px">
+        <div style="position:relative">
+        <svg viewBox="0 0 980 400" style="width:100%;height:auto;display:block" onMouseMove="{{ onChartMove }}" onMouseLeave="{{ onChartLeave }}">
+          <sc-for list="{{ yTicks }}" as="yt" hint-placeholder-count="4">
+            <line x1="56" x2="964" y1="{{ yt.y }}" y2="{{ yt.y }}" stroke="rgba(1,31,84,.09)" strokeWidth="1"></line>
+          </sc-for>
+          <sc-for list="{{ xTicks }}" as="xt" hint-placeholder-count="5">
+            <line x1="{{ xt.x }}" x2="{{ xt.x }}" y1="12" y2="368" stroke="rgba(1,31,84,.06)" strokeWidth="1"></line>
+          </sc-for>
+          <sc-if value="{{ tipX }}"><line x1="{{ tipX }}" x2="{{ tipX }}" y1="12" y2="368" stroke="rgba(1,31,84,.4)" strokeWidth="1" strokeDasharray="3,3"></line></sc-if>
+          <sc-for list="{{ lines }}" as="ln" hint-placeholder-count="3">
+            <path d="{{ ln.d }}" fill="none" stroke="{{ ln.color }}" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" opacity="0.92"></path>
+          </sc-for>
+        </svg>
+        <sc-for list="{{ yTicks }}" as="yt">
+          <div style="position:absolute;left:{{ yt.lx }};transform:translate(-100%,-50%);padding-right:7px;font-size:11.5px;color:#6b7280;pointer-events:none;top:{{ yt.pct }}">{{ yt.label }}</div>
+        </sc-for>
+        <sc-for list="{{ xTicks }}" as="xt">
+          <div style="position:absolute;bottom:0;font-size:11.5px;color:#6b7280;transform:translateX(-50%);pointer-events:none;left:{{ xt.pct }}">{{ xt.label }}</div>
+        </sc-for>
+        </div>
+        <sc-if value="{{ tip }}">
+          <div style="position:absolute;top:10px;pointer-events:none;left:{{ tip.left }};transform:{{ tip.shift }};background:#011f54;color:#ffffff;padding:9px 12px;font-size:12px;min-width:150px;box-shadow:0 4px 14px rgba(1,31,84,.3);z-index:3">
+            <div style="font-weight:700;margin-bottom:5px">{{ tip.label }}</div>
+            <sc-for list="{{ tip.rows }}" as="tr">
+              <div style="display:flex;align-items:center;gap:7px;justify-content:space-between;line-height:1.6"><span style="display:inline-flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:{{ tr.color }}"></span>{{ tr.label }}</span><span style="font-weight:600">{{ tr.v }}</span></div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <div style="position:relative;margin-top:12px;user-select:none">
+        <svg viewBox="0 0 980 110" preserveAspectRatio="none" style="width:100%;height:64px;display:block;background:#ffffff;border:1px solid #e5e7eb;box-sizing:border-box">
+          <sc-for list="{{ ovAreas }}" as="oa"><path d="{{ oa.d }}" fill="{{ oa.fill }}" stroke="none"></path></sc-for>
+        </svg>
+        <div style="position:absolute;top:0;bottom:0;left:0;background:rgba(255,255,255,.82);pointer-events:none;width:{{ shadeLW }}"></div>
+        <div style="position:absolute;top:0;bottom:0;right:0;background:rgba(255,255,255,.82);pointer-events:none;width:{{ shadeRW }}"></div>
+        <div onPointerDown="{{ brushDown0 }}" style="position:absolute;top:0;bottom:0;width:20px;transform:translateX(-50%);cursor:ew-resize;display:flex;align-items:center;justify-content:center;touch-action:none;left:{{ brushX0 }}"><div style="width:5px;height:70%;background:#011f54;box-shadow:0 0 0 2px #ffffff"></div></div>
+        <div onPointerDown="{{ brushDown1 }}" style="position:absolute;top:0;bottom:0;width:20px;transform:translateX(-50%);cursor:ew-resize;display:flex;align-items:center;justify-content:center;touch-action:none;left:{{ brushX1 }}"><div style="width:5px;height:70%;background:#011f54;box-shadow:0 0 0 2px #ffffff"></div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:#374151;margin-top:6px"><span>{{ brushFromLabel }}</span><span>{{ brushToLabel }}</span></div>
+    </div>
+    <aside class="vocal-panel">
+      <h2 style="font-family:'Varela',system-ui,sans-serif;font-size:23px;font-weight:700;margin:0 0 4px">Most vocal</h2>
+      <p style="margin:0 0 14px;font-size:13px;color:#6b7280">By statement count under current filters. Click to add a speaker to the filters.</p>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <sc-for list="{{ voices }}" as="vc" hint-placeholder-count="6">
+          <button onClick="{{ vc.onClick }}" style="text-align:left;border:1px solid {{ vc.border }};background:{{ vc.bg }};padding:9px 12px;cursor:pointer;display:block;width:100%">
+            <div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:600;margin-bottom:5px"><span style="display:inline-flex;align-items:center;gap:7px;min-width:0"><img src="{{ vc.flag }}" alt="" style="flex:none;width:{{ vc.fw }}px;height:12px;object-fit:cover;box-shadow:0 0 0 1px #e5e7eb"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ vc.name }}</span></span><span style="color:#6b7280;font-weight:500">{{ vc.count }}</span></div>
+            <sc-if value="{{ vc.hasRole }}"><div style="font-size:11px;color:#6b7280;margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ vc.role }}</div></sc-if>
+            <div style="height:5px;background:rgba(1,31,84,.07)"><div style="height:5px;background:#011f54;width:{{ vc.pct }}"></div></div>
+          </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ speakerActive }}"><button onClick="{{ clearSpeaker }}" style="margin-top:12px;font-size:12.5px;font-weight:600;color:#c1121f;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px">Clear speaker filter</button></sc-if>
+    </aside>
+  </section>
+
+  <!-- id: what a #q=<id> permalink scrolls to, since the directory sits below
+       the chart and a quote link that lands at the top of the page hides the
+       statement it was about. -->
+  <section id="directory" style="margin-top:24px;opacity:{{ mainOpacity }};transition:opacity .35s">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <h2 style="font-family:'Varela',system-ui,sans-serif;font-size:28px;font-weight:700;margin:0">Quote directory</h2>
+      <div style="font-size:13px;color:#6b7280">{{ showingText }}</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0 8px">
+      <input value="{{ search }}" onChange="{{ onSearch }}" placeholder="Search quotes, speakers, context, topic tags…" style="flex:1;min-width:220px;padding:10px 14px;border:1px solid #e5e7eb;font-size:14px;background:#ffffff;outline-color:#02358c">
+      <sc-if value="{{ anyFilter }}"><button onClick="{{ resetFilters }}" style="padding:8px 12px;font-size:12.5px;font-weight:600;color:#c1121f;background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:2px">Reset</button></sc-if>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:4px 0 2px">
+      <span style="font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#6b7280">Sort</span>
+      <span style="font-size:12.5px;font-weight:600;color:#374151">Relevant</span>
+      <input type="range" min="0" max="100" value="{{ sortWPct }}" onInput="{{ onSortW }}" style="flex:1;min-width:150px;max-width:300px;accent-color:#02358c;cursor:pointer">
+      <span style="font-size:12.5px;font-weight:600;color:#374151">Recent</span>
+      <span style="font-size:12px;color:#6b7280;min-width:64px">{{ sortLabel }}</span>
+      <!-- Same r0/r1 range the chart brush drags, spelled out in numbers: the
+           brush is quicker to sweep, this is quicker to hit an exact month.
+           margin-left:auto parks the pair on the row's right edge, against the
+           search box and Reset above; label and selects travel inside one box
+           so a narrow row wraps them as a unit rather than orphaning "Dates". -->
+      <span style="display:inline-flex;align-items:center;gap:8px;margin-left:auto">
+        <span style="font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#6b7280">Dates</span>
+        <span style="display:inline-flex;align-items:center;gap:6px">
+          <select value="{{ fromMonth }}" onChange="{{ onFromMonth }}" aria-label="First month shown" style="padding:5px 7px;border:1px solid #e5e7eb;background:#ffffff;font-size:12.5px;font-family:inherit;font-variant-numeric:tabular-nums;color:#374151;cursor:pointer;outline-color:#02358c">
+            <sc-for list="{{ monthOpts }}" as="mo" hint-placeholder-count="3"><option value="{{ mo.v }}">{{ mo.v }}</option></sc-for>
+          </select>
+          <span style="font-size:12.5px;color:#6b7280">–</span>
+          <select value="{{ toMonth }}" onChange="{{ onToMonth }}" aria-label="Last month shown" style="padding:5px 7px;border:1px solid #e5e7eb;background:#ffffff;font-size:12.5px;font-family:inherit;font-variant-numeric:tabular-nums;color:#374151;cursor:pointer;outline-color:#02358c">
+            <sc-for list="{{ monthOpts }}" as="mo" hint-placeholder-count="3"><option value="{{ mo.v }}">{{ mo.v }}</option></sc-for>
+          </select>
+        </span>
+      </span>
+    </div>
+    <sc-if value="{{ speakerBanner }}"><div style="margin:4px 0 8px;font-size:13px;color:#374151">Showing statements by <strong>{{ speakerBanner }}</strong></div></sc-if>
+
+    <sc-if value="{{ isFocused }}"><div style="margin:8px 0;padding:9px 14px;font-size:13px;color:#374151;background:rgba(1,31,84,.05);border-left:3px solid #011f54">Showing one linked statement. <button onClick="{{ clearFocus }}" style="font-size:13px;font-weight:600;color:#02358c;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px">Show the whole directory</button></div></sc-if>
+
+    <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:60px 20px;text-align:center;color:#6b7280;font-size:15px;border:1px dashed #e5e7eb;margin-top:14px">{{ emptyText }}</div>
+    </sc-if>
+
+    <div style="display:flex;flex-direction:column;gap:14px;margin-top:12px">
+      <sc-for list="{{ quotes }}" as="qt" hint-placeholder-count="5">
+        <article style="background:#ffffff;border:1px solid #e5e7eb;padding:20px 24px 16px">
+          <sc-if value="{{ qt.hasOrig }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px 26px;margin-bottom:12px">
+              <blockquote onClick="{{ qt.onUtterance }}" title="{{ qt.utTitle }}" class="{{ qt.qqCls }}" style="margin:0;font-family:'Varela',system-ui,sans-serif;font-size:16.5px;line-height:1.6;text-wrap:pretty">{{ qt.eq }} <sc-if value="{{ qt.provNote }}"><span style="font-family:'DM Sans',system-ui,sans-serif;font-size:11.5px;color:#6b7280">{{ qt.provNote }}</span> </sc-if><a href="{{ qt.u }}" target="_blank" rel="noopener" style="font-family:'DM Sans',system-ui,sans-serif;font-size:12px;font-weight:600;white-space:nowrap">Full source text ↗</a></blockquote>
+              <!-- the original-language column opens the same panel, and is if
+                   anything the more honest way in: the passage behind it is the
+                   record, in this language, not in the English beside it -->
+              <blockquote onClick="{{ qt.onUtterance }}" title="{{ qt.utTitle }}" class="{{ qt.qqCls }}" lang="{{ qt.lang }}" style="margin:0;font-family:'Varela',system-ui,sans-serif;font-size:14.5px;line-height:1.65;color:#374151;text-wrap:pretty;border-left:2px solid #e5e7eb;padding-left:16px">{{ qt.oq }}</blockquote>
+            </div>
+          </sc-if>
+          <sc-if value="{{ qt.noOrig }}">
+            <blockquote onClick="{{ qt.onUtterance }}" title="{{ qt.utTitle }}" class="{{ qt.qqCls }}" style="margin:0 0 12px;font-family:'Varela',system-ui,sans-serif;font-size:17.5px;line-height:1.55;text-wrap:pretty">{{ qt.eq }} <sc-if value="{{ qt.provNote }}"><span style="font-family:'DM Sans',system-ui,sans-serif;font-size:11.5px;color:#6b7280">{{ qt.provNote }}</span> </sc-if><a href="{{ qt.u }}" target="_blank" rel="noopener" style="font-family:'DM Sans',system-ui,sans-serif;font-size:12px;font-weight:600;white-space:nowrap">Full source text ↗</a></blockquote>
+          </sc-if>
+          <div style="display:flex;gap:11px;align-items:flex-start">
+            <!-- The monogram is always drawn and the portrait is layered over
+                 it, rather than the two being alternatives. A portrait URL that
+                 404s (a Commons file renamed under a stale claim, a member with
+                 no official photo) then costs the row nothing: an alt="" image
+                 that fails to load renders as nothing, and the initials
+                 underneath are simply what remains. There is no error handler
+                 to write, which matters because the template DSL renders
+                 attributes, not event handlers.-->
+            <span aria-hidden="true" style="position:relative;width:38px;height:38px;flex:0 0 38px;border-radius:50%;overflow:hidden;background:rgba(1,31,84,.055);box-shadow:0 0 0 1px #e5e7eb;display:inline-flex;align-items:center;justify-content:center;color:#6b7280;font-size:12.5px;font-weight:700">{{ qt.initials }}<sc-if value="{{ qt.hasPortrait }}"><img src="{{ qt.si }}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:50% 0%"></sc-if></span>
+            <div style="min-width:0;flex:1 1 auto">
+              <div style="font-size:13.5px;margin-bottom:3px"><sc-if value="{{ qt.hasProfile }}"><a href="{{ qt.sl }}" target="_blank" rel="noopener" style="font-weight:700;color:#011f54;text-decoration:none;border-bottom:1px solid rgba(2,53,140,.45)">{{ qt.s }}</a></sc-if><sc-if value="{{ qt.noProfile }}"><strong>{{ qt.s }}</strong></sc-if><sc-if value="{{ qt.role }}"><span style="color:#6b7280"> — {{ qt.role }}</span></sc-if><span style="color:#6b7280"> · {{ qt.dateFmt }}</span></div>
+              <sc-if value="{{ qt.hasDesc }}"><p style="margin:0 0 6px;font-size:12px;line-height:1.5;color:#6b7280;font-style:italic">{{ qt.sd }}</p></sc-if>
+            </div>
+          </div>
+          <sc-if value="{{ qt.hasCtx }}"><p style="margin:0 0 10px;font-size:12.5px;line-height:1.5;color:#6b7280">{{ qt.c }}</p></sc-if>
+          <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;border-top:1px solid rgba(1,31,84,.08);padding-top:10px">
+            <span style="display:inline-flex;gap:6px;flex-wrap:wrap;align-items:center;flex:1 1 auto">
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#374151;background:rgba(1,31,84,.055);padding:3px 8px"><img src="{{ qt.flag }}" alt="" style="width:{{ qt.fw }}px;height:11px;object-fit:cover;box-shadow:0 0 0 1px #e5e7eb">{{ qt.jname }}</span>
+              <sc-for list="{{ qt.tags }}" as="tg"><button onClick="{{ tg.onClick }}" title="{{ tg.title }}" style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:none;cursor:pointer;color:{{ tg.fg }};background:{{ tg.bg }};padding:3px 8px">{{ tg.label }}</button></sc-for>
+              <span style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6b7280;border:1px solid #e5e7eb;padding:2px 8px">{{ qt.stance }}</span>
+            </span>
+            <span style="display:inline-flex;gap:8px;align-items:center;margin-left:auto">
+              <!-- the same action as clicking the quote, for a keyboard and for
+                   a reader who never discovers that the quote is clickable -->
+              <sc-if value="{{ qt.hasUt }}"><button onClick="{{ qt.onUtterance }}" title="{{ qt.utTitle }}" class="qact">In context</button></sc-if>
+              <button onClick="{{ qt.onCopy }}" title="{{ qt.copyTitle }}" class="qact {{ qt.copyCls }}">{{ qt.copyLabel }}</button>
+              <sc-if value="{{ qt.canShare }}"><button onClick="{{ qt.onShare }}" title="{{ qt.shareTitle }}" class="qact {{ qt.shareCls }}">{{ qt.shareLabel }}</button></sc-if>
+            </span>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+    <sc-if value="{{ hasMore }}">
+      <div style="text-align:center;margin-top:22px"><button onClick="{{ loadMore }}" style="padding:11px 26px;border:1.5px solid #011f54;background:#ffffff;font-size:14px;font-weight:600;cursor:pointer">Load {{ moreCount }} more</button></div>
+    </sc-if>
+  </section>
+
+  <!-- The FAQ closes the tracker rather than opening the About page: the
+       questions it answers are the ones the directory itself provokes, and a
+       reader who has them has just come to the bottom of it. Same file format,
+       same renderer and same styles as the method notes, one section lower --
+       so a question is added by editing faq.md and nothing else.
+       No rule above it, and little air: the questions belong to the directory
+       they follow, and a heavy border made them read as a separate document
+       that had been appended to the page. -->
+  <sc-if value="{{ faqReady }}">
+    <section id="faq" style="margin-top:30px">
+      <h2 style="font-family:'Varela',system-ui,sans-serif;font-size:28px;font-weight:700;margin:0">Frequently asked questions</h2>
+      <div class="md faq"><div dangerouslySetInnerHTML="{{ faqHtml }}"></div></div>
+    </section>
+  </sc-if>
+  <sc-if value="{{ faqFailed }}">
+    <div style="margin-top:30px;font-size:13px;color:#6b7280">The FAQ could not be loaded. faq.md must sit next to index.html on the server.</div>
+  </sc-if>
+
+  <!-- The surrounding remarks. A quote is a span somebody cut out of a speech,
+       and this is the speech: the passage it came from, with the quote marked
+       inside it, fetched only when a reader asks for it (see utFile above on
+       why it is not in the payload). The backdrop closes it, as does Escape and
+       the button; the box stops the click that would otherwise reach the
+       backdrop through it. -->
+  <sc-if value="{{ ut }}">
+    <div class="utwrap" onClick="{{ ut.close }}">
+      <div class="utbox" onClick="{{ ut.stop }}" role="dialog" aria-modal="true" aria-label="{{ ut.title }}" tabindex="-1">
+        <div class="uthead">
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <div style="min-width:0;flex:1 1 auto">
+              <div style="font-size:13.5px;margin-bottom:3px"><strong>{{ ut.s }}</strong><sc-if value="{{ ut.hasRole }}"><span style="color:#6b7280"> — {{ ut.role }}</span></sc-if><span style="color:#6b7280"> · {{ ut.dateFmt }}</span></div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px;color:#6b7280">
+                <span style="display:inline-flex;align-items:center;gap:6px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#374151;background:rgba(1,31,84,.055);padding:3px 8px"><img src="{{ ut.flag }}" alt="" style="width:{{ ut.fw }}px;height:11px;object-fit:cover;box-shadow:0 0 0 1px #e5e7eb">{{ ut.jname }}</span>
+                <sc-if value="{{ ut.hasOccasion }}"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ut.occasion }}</span></sc-if>
+              </div>
+            </div>
+            <button onClick="{{ ut.close }}" title="Close" aria-label="Close" style="flex:0 0 auto;border:1px solid #e5e7eb;background:#ffffff;color:#374151;font-size:15px;line-height:1;padding:6px 10px;cursor:pointer">×</button>
+          </div>
+        </div>
+        <!-- the passage, and the element that scrolls: focus lands here on open
+             so Page Down and the arrow keys move the record rather than the
+             directory behind it -->
+        <div class="utbody" tabindex="-1">
+          <sc-if value="{{ ut.loading }}">
+            <div style="display:flex;align-items:center;gap:10px;padding:26px 0;color:#6b7280;font-size:13px"><span style="width:15px;height:15px;border:2px solid #e5e7eb;border-top-color:#02358c;border-radius:50%;animation:ldspin .8s linear infinite"></span>Fetching the record this was taken from…</div>
+          </sc-if>
+          <sc-if value="{{ ut.failed }}">
+            <div style="padding:22px 0;font-size:13px;color:#374151">The surrounding remarks could not be loaded. <a href="{{ ut.u }}" target="_blank" rel="noopener" style="font-weight:600">Read the source instead ↗</a></div>
+          </sc-if>
+          <sc-if value="{{ ut.ready }}">
+            <div lang="{{ ut.lang }}" dangerouslySetInnerHTML="{{ ut.html }}"></div>
+          </sc-if>
+          <sc-if value="{{ ut.hasNotes }}">
+            <div style="margin-top:16px;font-size:11.5px;line-height:1.6;color:#6b7280">
+              <sc-for list="{{ ut.notes }}" as="nt"><div>{{ nt.text }}</div></sc-for>
+            </div>
+          </sc-if>
+          <div style="margin-top:14px"><a href="{{ ut.u }}" target="_blank" rel="noopener" style="font-size:12px;font-weight:600">Full source text ↗</a></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  </sc-if>
+
+</div>
+<footer style="margin-top:80px;background:#011f54;color:#ffffff">
+  <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:16px;max-width:1180px;margin:0 auto;padding:30px 28px">
+    <a href="{{ mailto }}" style="flex:none;padding:11px 22px;background:#ffffff;color:#011f54;font-size:14px;font-weight:600;text-decoration:none">Request the data</a>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultScope&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;frontier&quot;,&quot;core&quot;,&quot;all&quot;],&quot;default&quot;:&quot;frontier&quot;,&quot;tsType&quot;:&quot;'frontier'|'core'|'all'&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;defaultJurisdiction&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;WORLD&quot;,&quot;US&quot;,&quot;CN&quot;,&quot;EU&quot;,&quot;UK&quot;,&quot;FR&quot;,&quot;DE&quot;,&quot;JP&quot;,&quot;CA&quot;,&quot;CH&quot;,&quot;SG&quot;,&quot;BR&quot;,&quot;MX&quot;,&quot;ZA&quot;,&quot;AU&quot;,&quot;NL&quot;,&quot;RU&quot;,&quot;TW&quot;,&quot;NATO&quot;,&quot;UN&quot;],&quot;default&quot;:&quot;EU&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;pageSize&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:15,&quot;min&quot;:10,&quot;max&quot;:100,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+// ---------------------------------------------------------------------------
+// Presentation + taxonomy constants. These sit above the class because
+// componentDidMount uses them to precompute each quote's search haystack, and
+// renderVals reads them on every pass.
+// ---------------------------------------------------------------------------
+const rawSvg = s => 'data:image/svg+xml,' + encodeURIComponent(s);
+const svgUri = s => 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 14">' + s + '</svg>');
+const worldIcon = svgUri('<circle cx="10" cy="7" r="5.6" fill="#e5e7eb" stroke="#374151" stroke-width="1.1"/><ellipse cx="10" cy="7" rx="2.5" ry="5.6" fill="none" stroke="#374151" stroke-width="0.9"/><line x1="4.6" y1="7" x2="15.4" y2="7" stroke="#374151" stroke-width="0.9"/><path d="M5.2 4 A8.5 8.5 0 0 1 14.8 4 M5.2 10 A8.5 8.5 0 0 0 14.8 10" fill="none" stroke="#374151" stroke-width="0.9"/>');
+const intlIcon = svgUri('<rect x="3" y="11.4" width="14" height="1.6" fill="#374151"/><path d="M10 1 L17 5 L3 5 Z" fill="#374151"/><rect x="4.6" y="6" width="1.7" height="4.6" fill="#374151"/><rect x="7.8" y="6" width="1.7" height="4.6" fill="#374151"/><rect x="10.9" y="6" width="1.7" height="4.6" fill="#374151"/><rect x="14" y="6" width="1.7" height="4.6" fill="#374151"/>');
+// Flag of NATO, from Wikimedia Commons (public domain). Inlined rather
+// than hotlinked: flagcdn only serves country codes and 404s on 'nato',
+// and a second external host is one more thing that can fail at load.
+const natoIcon = rawSvg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 768"><path style="fill:#004990;fill-opacity:1" d="M0 0h1024v768H0z"/><path d="M730.1 387.8v-8.6h217.6v8.6H730.1zm-652.8 0v-8.6h217.6v8.6H77.3zm430.9 213.3h8.6v89.6h-8.6v-89.6zm0-524.8h8.6v89.6h-8.6V76.3zm195.4 306.9H512.3l34.5-36-30.2-135.5c0-1.5 1.4-1.5 1.4 0l40.3 126.8 145.3 44.7zm-46.1-25.9c-10-60.6-57.5-109.6-119.4-121.1l4.4 11.5c51.8 11.5 93.5 53.3 105 106.7l10 2.9zM512.3 573.5V383.2l34.5 33.2 136.6-28.9s1.5 1.5 0 1.5l-128 40.3-43.1 144.2zm24.4-44.7c61.9-10.1 110.8-59.1 120.8-119.6l-11.5 4.3c-11.5 51.9-53.2 93.7-105 103.8l-4.3 11.5zM320.9 383.2h191.4l-34.6 34.6 30.2 135.5c0 1.5-1.4 1.5-1.4 0l-40.3-126.8-145.3-43.3zm46.1 24.5c10 60.6 57.5 109.6 119.4 121.1l-4.4-11.5c-51.7-11.6-93.5-53.4-105-106.7l-10-2.9zm145.3-216.2v191.7l-34.6-34.6-136.6 28.8s-1.5-1.4 0-1.4l128-40.4 43.2-144.1zm-24.5 44.7C425.9 246.3 377 295.3 367 355.8l11.5-4.3c11.5-51.9 53.2-93.7 105-103.8l4.3-11.5z" fill="#fff"/></svg>');
+const cdn = c => 'https://flagcdn.com/' + c + '.svg';
+const JURIS = [
+  { id: 'WORLD', label: 'Worldwide', flag: worldIcon },
+  { id: 'US', label: 'United States', flag: cdn('us') },
+  { id: 'CN', label: 'China', flag: cdn('cn') },
+  { id: 'EU', label: 'European Union', flag: cdn('eu') },
+  { id: 'UK', label: 'United Kingdom', flag: cdn('gb') },
+  { id: 'FR', label: 'France', flag: cdn('fr') },
+  { id: 'DE', label: 'Germany', flag: cdn('de') },
+  { id: 'JP', label: 'Japan', flag: cdn('jp') },
+  { id: 'CA', label: 'Canada', flag: cdn('ca') },
+  // Flag of Switzerland, from Wikimedia Commons (public domain). Square
+  // by law; `square: true` makes the <img> square so its border and
+  // rounded corner hug the flag instead of boxing empty space around it.
+  { id: 'CH', label: 'Switzerland', square: true, flag: rawSvg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m0 0h32v32h-32z" fill="#f00"/><path d="m13 6h6v7h7v6h-7v7h-6v-7h-7v-6h7z" fill="#fff"/></svg>') },
+  { id: 'SG', label: 'Singapore', flag: cdn('sg') },
+  { id: 'BR', label: 'Brazil', flag: cdn('br') },
+  { id: 'MX', label: 'Mexico', flag: cdn('mx') },
+  { id: 'ZA', label: 'South Africa', flag: cdn('za') },
+  { id: 'AU', label: 'Australia', flag: cdn('au') },
+  { id: 'NL', label: 'Netherlands', flag: cdn('nl') },
+  { id: 'RU', label: 'Russia', flag: cdn('ru') },
+  { id: 'TW', label: 'Taiwan', flag: cdn('tw') },
+  { id: 'NATO', label: 'NATO', flag: natoIcon },
+  { id: 'UN', label: 'United Nations', flag: cdn('un') }
+];
+const jmap = {}; JURIS.forEach(j => { jmap[j.id] = j; });
+// never index jmap directly for a code that came from the data:
+// an unknown one must still render, not throw on .flag
+const jentry = code => jmap[code] || { id: code, label: code, flag: intlIcon };
+// square flags (Switzerland) must not sit in a wide slot: the shared
+// box-shadow border would then outline empty space either side of them
+// The quotes-data.json schema this page was built against. The pipeline repo
+// (ai-safety-policy-tracker) produces the file; SCHEMA.md, kept in both repos,
+// is the shared spec.
+//
+// The two halves are treated differently on purpose:
+//   MAJOR ahead -- the file is shaped in a way this code cannot read. Refuse.
+//   MINOR ahead -- readable, but it carries something we were not built for,
+//                  in practice a taxonomy value with no chip label here. Render
+//                  everything and say so, rather than dropping tags in silence.
+// Raise these together with the code that reads whatever the new version added.
+const SCHEMA_SUPPORTED = { major: 2, minor: 5 };
+
+// --- the utterance sidecar (schema 2.5.0) ----------------------------------
+// A quote is a span cut out of something longer, and `ul` on a row is the
+// pipeline saying how much longer -- the length of the passage it shipped for
+// that quote. The passages themselves are 25 MB, so they are not in the payload
+// every visitor downloads: they sit in `utterances-<n>.json` next to it and are
+// fetched on a click, one shard at a time.
+//
+// Which shard is arithmetic on the id, not a lookup, so nothing has to be
+// loaded to know where to look -- a manifest mapping five thousand ids to eight
+// files would cost more than the sharding saves. Keep this in step with
+// export/utterances.py:shard_of; the two are one rule written twice, and a
+// mismatch reads as "no remarks here" rather than as an error, because the
+// shard it lands in is a perfectly valid file that simply lacks the id.
+const UT_SHARDS = 8;
+const utFile = id => 'utterances-' + (parseInt(id[0], 16) % UT_SHARDS) + '.json';
+// The passage with the quote marked inside it. Paragraph breaks are the one
+// piece of the record's formatting the sidecar keeps (`\n\n`), and the span may
+// run across one, so the highlight is applied per paragraph rather than as a
+// single <mark> that would have to be opened and closed across a </p>.
+// Escaped by hand for the same reason the Markdown renderer escapes: this is
+// government prose out of a machine parser, not markup, and none of it should
+// ever be read as any.
+const utHtml = rec => {
+  const s = rec.s && rec.s.length === 2 ? rec.s : null;
+  let at = 0, out = '';
+  for (const para of String(rec.t || '').split('\n\n')) {
+    const a = at, b = at + para.length;
+    at = b + 2;
+    if (s && s[1] > a && s[0] < b) {
+      const lo = Math.max(s[0], a) - a, hi = Math.min(s[1], b) - a;
+      out += '<p>' + mdEsc(para.slice(0, lo)) + '<mark>' + mdEsc(para.slice(lo, hi))
+        + '</mark>' + mdEsc(para.slice(hi)) + '</p>';
+    } else {
+      out += '<p>' + mdEsc(para) + '</p>';
+    }
+  }
+  return out;
+};
+
+// Accepts "2.1.0", a bare 2 (the brief integer-versioned form), and undefined
+// for the original unversioned array. Anything unparseable reads as 0.0.0,
+// which renders -- an unreadable version string is not a reason to blank a page
+// whose rows are probably fine.
+function parseSchemaVersion(v) {
+  if (typeof v === 'number') return { major: v, minor: 0 };
+  const m = /^(\d+)\.(\d+)/.exec(String(v == null ? '' : v));
+  return m ? { major: +m[1], minor: +m[2] } : { major: 0, minor: 0 };
+}
+const flagW = (j, w, h) => (j && j.square ? h : w);
+// Initials for the monogram that stands in for a missing portrait. Particles
+// are not initials anyone would write -- "Van der Lee" is VL, not VDL -- and
+// the native-script parenthetical that CJK canonical names carry ("Lai Ching-te
+// (賴清德)") is not part of the name being abbreviated either.
+const MONOGRAM_SKIP = new Set(['van', 'der', 'den', 'de', 'du', 'la', 'le', 'di', 'da', 'von', 'of', 'the', 'and']);
+function monogram(name) {
+  const words = String(name == null ? '' : name)
+    .replace(/[（(][^)）]*[)）]/g, ' ')
+    .split(/[\s.,\-–—]+/)
+    .filter(w => w && !MONOGRAM_SKIP.has(w.toLowerCase()));
+  if (!words.length) return '?';
+  const pick = words.length === 1 ? [words[0]] : [words[0], words[words.length - 1]];
+  // spread, not [0]: a CJK or accented first character can be a surrogate pair
+  return pick.map(w => [...w][0].toUpperCase()).join('');
+}
+// Five series that must stay apart at a glance, drawn from a brand palette
+// that is nearly all blue. Bright, blue and the cyan accent carry the three
+// capability topics; the two that already mean something borrow the semantic
+// tokens -- warn red for Risk, muted grey for Regulation, which is also the
+// one topic the page de-emphasises. Ordering them bright/cyan/blue keeps the
+// two closest hues (bright and blue) out of adjacent legend slots.
+const TOPICS = [
+  { id: 'agi', label: 'AGI', color: '#02358c' },
+  { id: 'asi', label: 'ASI', color: '#0ea1c0' },
+  { id: 'rsi', label: 'RSI', color: '#3d5a80' },
+  // the id stays x_risk -- it is what the judge writes and what quotes-data
+  // carries; only the label shown on the page is 'Risk'
+  { id: 'x_risk', label: 'Risk', color: '#c1121f' },
+  { id: 'regulation', label: 'Regulation', color: '#6b7280' }
+];
+const TAGMETA = {
+  agi: { label: 'AGI', fg: '#02358c', bg: 'rgba(2,53,140,.10)' },
+  asi: { label: 'ASI', fg: '#0a6070', bg: 'rgba(14,161,192,.14)' },
+  rsi: { label: 'RSI', fg: '#2b4c6f', bg: 'rgba(61,90,128,.13)' },
+  x_risk: { label: 'Risk', fg: '#c1121f', bg: 'rgba(193,18,31,.10)' },
+  regulation: { label: 'Regulation', fg: '#374151', bg: 'rgba(1,31,84,.07)' }
+};
+// refine-stage taxonomy (quotes-data `rt` field, CODEBOOK §Refined taxonomy):
+// short chip labels for the MIT AI Risk Repository subdomains and AGORA
+// governance strategies. Quotes without `rt` keep the coarse chips.
+// Split in two because the filter bar offers them as separate dimensions --
+// "which risk is this about" and "which policy lever does it reach for" are
+// different questions, and a reader usually wants to combine them, not merge
+// them into one 37-entry list.
+const REFRISK = {
+  unfair_discrimination: 'Discrimination', toxic_content: 'Toxic content',
+  unequal_performance: 'Unequal performance', privacy_compromise: 'Privacy',
+  ai_system_vulnerabilities: 'AI security', false_information: 'False information',
+  information_ecosystem_pollution: 'Info ecosystem',
+  disinformation_influence_at_scale: 'Disinfo & influence',
+  fraud_and_manipulation: 'Fraud & manipulation',
+  cyberattacks_and_weapons: 'Cyber & weapons', overreliance_unsafe_use: 'Overreliance',
+  loss_of_human_agency: 'Human agency', power_centralization: 'Power centralization',
+  inequality_employment: 'Jobs & inequality',
+  devaluation_of_human_effort: 'Human devaluation',
+  competitive_dynamics: 'AI race & sovereignty', governance_failure: 'Governance gap',
+  environmental_harm: 'Environment', misalignment_loss_of_control: 'Loss of control',
+  dangerous_capabilities: 'Dangerous capabilities', lack_of_robustness: 'Robustness',
+  lack_of_transparency: 'Transparency', ai_welfare_rights: 'AI welfare',
+  multi_agent_risks: 'Multi-agent risks'
+};
+const REFINSTR = {
+  convening: 'Convening', disclosure_requirements: 'Disclosure',
+  evaluation_auditing: 'Evals & audits', governance_development: 'Gov. frameworks',
+  government_study: 'Gov. study', government_support: 'Public investment',
+  compute_controls: 'Compute & export controls', data_controls: 'Data controls',
+  licensing_and_registration: 'Licensing', new_institution: 'New institution',
+  performance_requirements: 'Safety requirements', pilots_and_testbeds: 'Sandboxes',
+  risk_tiering: 'Risk tiering'
+};
+const REFLABELS = { ...REFRISK, ...REFINSTR };
+const STANCES = [
+  { v: 'concerned', label: 'Concerned' }, { v: 'mixed', label: 'Mixed' },
+  { v: 'neutral', label: 'Neutral' }, { v: 'optimistic', label: 'Optimistic' },
+  { v: 'dismissive', label: 'Dismissive' }
+];
+const FRONT = ['agi', 'asi', 'rsi', 'x_risk'];
+// the `defaultScope` prop is now just a preset for the Topic filter's initial
+// selection: 'frontier' is AGI/ASI/RSI/Risk, 'core' drops x_risk to leave the
+// capability claims on their own, 'all' starts with Topic unfiltered.
+const SCOPE_TOPICS = { frontier: FRONT, core: ['agi', 'asi', 'rsi'], all: [] };
+const MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+// quotation marks per language so the ORIGINAL reads naturally, not just
+// wrapped in English curly quotes. fr uses guillemets w/ NBSP; de „…"; the
+// CJK langs use their corner/fullwidth marks. mul (EP, mixed source langs)
+// and anything unlisted fall back to English “…”.
+const QMARK = {
+  en: ['“', '”'], zh: ['“', '”'], pt: ['“', '”'],
+  fr: ['« ', ' »'], de: ['„', '“'],
+  ja: ['「', '」'], ko: ['「', '」']
+};
+const wrapQuote = (text, lang) => { const m = QMARK[lang] || QMARK.en; return m[0] + text + m[1]; };
+// Quotation marks are a claim that these are the speaker's words, so on an `nv`
+// row (schema 2.4.0) they are simply wrong: an official readout paraphrasing a
+// leader, or a Hansard question printed in the clerk's third person. The marks
+// come off and NVNOTE below carries the reason. Both the English and the
+// original-language block go bare together -- the caveat is about the passage,
+// not about one rendering of it.
+const showQuote = (text, lang, nv) => nv ? text : wrapQuote(text, lang);
+// Whose English the reader is looking at (`tr` from the exporter). A quote said
+// in English carries no note: the absence is the default case, not a gap. 'raw'
+// is the odd one out -- there the text on the page is not English at all, and
+// saying so beats letting it read as a rendering fault.
+const TRNOTE = {
+  mt: '(Machine Translation)',
+  official: '(Official Translation)',
+  raw: '(Untranslated)'
+};
+// `asr` (schema 2.3.0): the source is a machine transcript of audio, not a
+// written record, so the words are not guaranteed verbatim. Same standing as a
+// TRNOTE and shown the same way -- both answer "whose wording is this?" -- and
+// the two can stack, since a transcript can also have been translated.
+const ASRNOTE = '(Automatic Speech Recognition)';
+// `nv` (schema 2.4.0): the words are somebody else's rendering of what was said.
+// Shown first of the three, because it is the one that also changed the
+// typography around it -- a reader who notices the missing quotation marks
+// should find the reason in the same glance.
+const NVNOTE = '(Not verbatim)';
+// Each note is glued together with NBSPs and the pair joined by an ordinary
+// space, so a note never breaks across lines but two of them may break apart
+// from each other -- which is the only way both fit a phone. This is why the
+// span around them is not `white-space:nowrap`.
+const provNote = q => [q.nv ? NVNOTE : null, TRNOTE[q.tr], q.asr ? ASRNOTE : null]
+  .filter(Boolean).map(n => n.replace(/ /g, '\u00a0')).join(' ') || null;
+// ---------------------------------------------------------------------------
+// Markdown for the method page. Deliberately small: the page is one file the
+// author edits by hand, so it needs headings, prose, lists, quotes, a table and
+// code, and nothing else. Written out rather than pulled from a CDN because the
+// whole site is three static files and a fourth origin is a fourth thing that
+// can be down. Raw HTML in the source is escaped, not passed through -- the
+// file is authored by the site owner, but a renderer that silently executes
+// whatever it is handed is a bad default to leave lying around.
+// ---------------------------------------------------------------------------
+const mdEsc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// only these schemes reach an href; anything else renders as inert text
+const mdHref = h => /^(https?:|mailto:|#|\/)/i.test(h) ? h : '#';
+const mdInline = raw => {
+  let t = mdEsc(raw);
+  // code spans are lifted out first so their contents survive the rest
+  const code = [];
+  t = t.replace(/`([^`]+)`/g, (_, c) => '\u0000' + (code.push(c) - 1) + '\u0000');
+  t = t.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g,
+    (_, txt, href) => '<a href="' + mdHref(href) + '" target="_blank" rel="noopener">' + txt + '</a>');
+  t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+  return t.replace(/\u0000(\d+)\u0000/g, (_, i) => '<code>' + code[i] + '</code>');
+};
+const MD_ITEM = /^(\s*)([-*+]|\d+[.)])\s+(.*)$/;
+// A list block, from `lines[i0]` to the first line that is neither an item nor
+// indented under one; returns the html and where to resume. Indentation is what
+// decides nesting: an item indented past the marker column of the list it lands
+// in opens a sub-list inside the item above it, and that sub-list closes as soon
+// as the indent falls back. A blank line stays inside the list as long as what
+// follows is still indented under it, so a sub-list set off by one doesn't come
+// out as two sibling lists.
+const mdList = (lines, i0) => {
+  const indent = MD_ITEM.exec(lines[i0])[1].length;
+  const ord = /\d/.test(MD_ITEM.exec(lines[i0])[2]);
+  const items = [];
+  let i = i0;
+  while (i < lines.length) {
+    if (/^\s*$/.test(lines[i])) {
+      // only a blank line the list continues past; anything else ends it
+      let j = i;
+      while (j < lines.length && /^\s*$/.test(lines[j])) j++;
+      const m = j < lines.length && MD_ITEM.exec(lines[j]);
+      if (!m || m[1].length < indent) break;
+      i = j;
+      continue;
+    }
+    const m = MD_ITEM.exec(lines[i]);
+    if (!m || m[1].length < indent) break;
+    if (m[1].length > indent) {
+      const sub = mdList(lines, i);
+      if (!items.length) items.push({ body: [], sub: '' });
+      items[items.length - 1].sub += sub.html;
+      i = sub.next;
+      continue;
+    }
+    const buf = [m[3]];
+    // continuation lines: indented past this item's marker, and not an item
+    for (i++; i < lines.length && /^(\s*)\S/.test(lines[i])
+      && /^\s*/.exec(lines[i])[0].length > indent && !MD_ITEM.test(lines[i]); i++) buf.push(lines[i].trim());
+    items.push({ body: buf, sub: '' });
+  }
+  const html = (ord ? '<ol>' : '<ul>')
+    + items.map(it => '<li>' + mdInline(it.body.join(' ')) + it.sub + '</li>').join('')
+    + (ord ? '</ol>' : '</ul>');
+  return { html, next: i };
+};
+const mdToHtml = src => {
+  const lines = src.replace(/\r\n?/g, '\n').split('\n');
+  const out = [];
+  const cells = row => row.replace(/^\||\|$/g, '').split('|').map(c => mdInline(c.trim()));
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (/^\s*$/.test(line)) { i++; continue; }
+    let m;
+    if (/^```/.test(line)) {
+      const buf = [];
+      for (i++; i < lines.length && !/^```/.test(lines[i]); i++) buf.push(mdEsc(lines[i]));
+      i++;
+      out.push('<pre><code>' + buf.join('\n') + '</code></pre>');
+    } else if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line)) {
+      out.push('<hr>'); i++;
+    } else if ((m = /^(#{1,4})\s+(.*)$/.exec(line))) {
+      const n = m[1].length;
+      out.push('<h' + n + '>' + mdInline(m[2]) + '</h' + n + '>'); i++;
+    } else if (/^>\s?/.test(line)) {
+      const buf = [];
+      for (; i < lines.length && /^>\s?/.test(lines[i]); i++) buf.push(lines[i].replace(/^>\s?/, ''));
+      out.push('<blockquote>' + mdToHtml(buf.join('\n')) + '</blockquote>');
+    } else if (/^\s*\|.*\|\s*$/.test(line) && /^\s*\|[\s:|-]+\|\s*$/.test(lines[i + 1] || '')) {
+      const head = cells(line);
+      i += 2;
+      const body = [];
+      for (; i < lines.length && /^\s*\|.*\|\s*$/.test(lines[i]); i++) body.push(cells(lines[i]));
+      out.push('<table><thead><tr>' + head.map(c => '<th>' + c + '</th>').join('')
+        + '</tr></thead><tbody>'
+        + body.map(r => '<tr>' + r.map(c => '<td>' + c + '</td>').join('') + '</tr>').join('')
+        + '</tbody></table>');
+    } else if (MD_ITEM.test(line)) {
+      const list = mdList(lines, i);
+      out.push(list.html);
+      i = list.next;
+    } else {
+      const buf = [];
+      for (; i < lines.length && !/^\s*$/.test(lines[i])
+        && !/^(#{1,4}\s|>|```|\s*\|)/.test(lines[i])
+        && !MD_ITEM.test(lines[i]); i++) buf.push(lines[i].trim());
+      out.push('<p>' + mdInline(buf.join(' ')) + '</p>');
+    }
+  }
+  return out.join('\n');
+};
+const MAILTO = 'mailto:lfinke@ethz.ch'
+  + '?subject=' + encodeURIComponent('Data request: Governments on Superintelligence')
+  + '&body=' + encodeURIComponent([
+    'Hello,',
+    '',
+    'I would like to request the underlying data for the Governments on',
+    'Superintelligence tracker.',
+    '',
+    'Who I am:',
+    'Intended use:',
+    'What I need (all statements, particular jurisdictions, a date range):',
+    '',
+    'Thank you,',
+    ''
+  ].join('\n'));
+// smallest 1/2/5 × 10^n that keeps a 0..max axis to roughly six gridlines
+const niceStep = max => {
+  const raw = Math.max(1, max) / 6;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const n = raw / mag;
+  return Math.max(1, (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * mag);
+};
+
+// The filter dimensions. `keys` is the only thing that varies between them:
+// a quote matches a dimension when any of its keys is selected, and dimensions
+// AND together -- so "Topic: ASI" + "Jurisdiction: US, EU" reads as
+// (ASI) AND (US OR EU). `keys` doubles as the tally for the option counts.
+// Jurisdiction is the one single-select dimension, as it has always been: the
+// flag row below the bar is the page's primary control and reads as "which
+// government am I looking at", singular. Picking a flag replaces the choice
+// rather than adding to it; Worldwide, the popover's Clear, and the chip's ×
+// are the three ways back to no jurisdiction at all.
+const DIMS = [
+  { key: 'topic', label: 'Topic', keys: q => q.t },
+  { key: 'jur', label: 'Jurisdiction', keys: q => [q.j], searchable: true, single: true },
+  { key: 'risk', label: 'Risk area', keys: q => q._rk, searchable: true },
+  { key: 'instrument', label: 'Policy instrument', keys: q => q._rk, searchable: true },
+  { key: 'stance', label: 'Stance', keys: q => [q.st] },
+  { key: 'speaker', label: 'Speaker', keys: q => [q.s], searchable: true }
+];
+// Long option lists (speakers, above all) are searched, not scrolled: rendering
+// 1,500 rows into a popover costs more than it is ever worth.
+const OPT_LIMIT = 60;
+const emptySel = () => ({ topic: [], jur: [], risk: [], instrument: [], stance: [], speaker: [] });
+
+class Component extends DCLogic {
+  state = { data: [], loaded: false, error: false, sel: null, hidden: {}, search: '', sort: null, limit: 0, tip: null, r0: null, r1: null, open: null, optSearch: '', method: false, md: null, mdErr: false, faq: null, faqErr: false, stuck: false, focusId: null, flash: null, utId: null, utShards: {}, utFail: {} };
+  // one in-flight fetch per Markdown file, keyed by filename
+  _docs = {};
+  // and one per utterance shard, for the same reason
+  _utReq = {};
+  /** The method page lives at #method so it can be linked and bookmarked, and
+   *  so the browser's own Back button gets you out of it. One statement lives
+   *  at #q=<its id> for the same reasons -- that route is what the Share button
+   *  on each card hands out, and what makes the id in the payload worth having. */
+  syncRoute = () => {
+    const hash = location.hash;
+    const on = hash === '#method';
+    // The exporter's ids are 16 hex characters (SCHEMA.md), but the pattern is
+    // kept loose on purpose: an id this page cannot find has to be handled as a
+    // dead link anyway, and a mistyped one deserves the same answer.
+    const q = /^#q=([\w-]{1,64})$/.exec(hash);
+    // stuck goes with the scroll position reset below: the scroll listener would
+    // clear it a frame later anyway, and a bar that flashes in between is worse
+    this.setState({ method: on, focusId: q ? q[1] : null, stuck: false });
+    // Each page fetches its own prose, and only once it is the page being
+    // looked at. The FAQ is not behind a link the way the method notes are --
+    // it is the last section of the tracker -- so entering that route is the
+    // whole trigger.
+    if (on) this.loadDoc('method.md', 'md');
+    else this.loadDoc('faq.md', 'faq');
+    // A quote permalink is the one route that does not begin at the top of the
+    // page: the directory sits below the chart, so landing at the top would put
+    // the statement the link was about off-screen. The scroll waits for the
+    // data -- until it arrives there is no card to scroll to.
+    if (q) { this._toDirectory = true; this.scrollToDirectory(); return; }
+    // An anchor that names something on the page -- #faq -- is the browser's
+    // own business: it has already jumped there, and scrolling to the top would
+    // undo it. #method names no element, so the About page still starts at the top.
+    if (hash && document.getElementById(hash.slice(1))) return;
+    // both pages start at the top: the header is the About page's only nav, so
+    // arriving scrolled halfway down someone else's position hides it
+    window.scrollTo(0, 0);
+  };
+  /** The fixed bar's one input: has the masthead left the top of the window?
+   *  Measured off the element rather than against a hardcoded offset, because
+   *  the masthead's height moves with the title's clamp and the standfirst's
+   *  wrapping. setState only on the crossing, so a scroll is one re-render. */
+  onScroll = () => {
+    const el = document.getElementById('masthead');
+    const stuck = el ? el.getBoundingClientRect().bottom <= 0 : false;
+    if (stuck !== this.state.stuck) this.setState({ stuck });
+  };
+  /** Runs on every update as well as on the route change, because the route
+   *  usually changes before the corpus has loaded and a card cannot be scrolled
+   *  to before it exists. Once used, the flag is spent: a reader who scrolls
+   *  away from a permalinked quote should not be dragged back to it by the next
+   *  keystroke's re-render. */
+  scrollToDirectory() {
+    if (!this._toDirectory || !this.state.loaded) return;
+    const el = document.getElementById('directory');
+    if (!el) return;
+    this._toDirectory = false;
+    el.scrollIntoView({ block: 'start' });
+  }
+  /** Clipboard, with the pre-async fallback behind it. navigator.clipboard is
+   *  absent outside a secure context, which includes the file:// copy of this
+   *  page used to eyeball a change before deploying it -- and a Copy button
+   *  that silently does nothing there reads as a broken button, not as a
+   *  missing browser API. Rejects if neither route works, so the caller can say
+   *  so on the button rather than claiming a copy that never happened. */
+  copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise((resolve, reject) => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject(new Error('copy unavailable'));
+    });
+  }
+  /** One transient button label at a time. `flash` is "<quote id>|<outcome>",
+   *  which is all a card needs to light its own button and leave the other
+   *  twenty-four alone. */
+  flash(id, outcome) {
+    clearTimeout(this._flashT);
+    this.setState({ flash: id + '|' + outcome });
+    this._flashT = setTimeout(() => this.setState({ flash: null }), 2200);
+  }
+  /** Fetch one of the page's Markdown files into `state[key]`, its failure into
+   *  `state[key + 'Err']`. At most one request per file for the life of the
+   *  page: routes are crossed freely, and re-fetching prose that has not
+   *  changed on every crossing is a request for nothing. A failure is not
+   *  retried either -- the section says so instead, which is the honest answer
+   *  for a file that is meant to sit next to index.html and does not. */
+  loadDoc(file, key) {
+    const errKey = key + 'Err';
+    if (this.state[key] || this.state[errKey] || this._docs[file]) return;
+    this._docs[file] = true;
+    fetch(file).then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    }).then(text => this.setState({ [key]: text })).catch(() => this.setState({ [errKey]: true }));
+  }
+  /** Open the surrounding remarks for one quote, fetching its shard if this is
+   *  the first click into that eighth of the corpus. Kept as two steps -- open
+   *  now, arrive later -- because the shard is a few megabytes: the panel opens
+   *  on the click and says it is loading, rather than the click doing nothing
+   *  visible for a second and a half on a slow connection. */
+  openUtterance(id) {
+    this.setState({ utId: id });
+    const file = utFile(id);
+    if (this.state.utShards[file] || this.state.utFail[file] || this._utReq[file]) return;
+    this._utReq[file] = true;
+    fetch(file).then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(blob => this.setState(s => ({ utShards: { ...s.utShards, [file]: (blob && blob.u) || {} } })))
+      // Left in the failed set rather than retried on the next click: a shard
+      // that 404s is a deploy that shipped the payload without its sidecar, and
+      // hammering it once per click will not fix that. The panel says so.
+      .catch(() => this.setState(s => ({ utFail: { ...s.utFail, [file]: true } })));
+  }
+  closeUtterance = () => this.setState({ utId: null });
+  /** Escape closes the panel. The dialog is the only thing on this page that
+   *  traps the reader's attention, so it is the only thing that needs it. */
+  onKey = e => {
+    if (e.key === 'Escape' && this.state.utId) this.closeUtterance();
+  };
+  componentDidMount() {
+    window.addEventListener('hashchange', this.syncRoute);
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('keydown', this.onKey);
+    this.syncRoute();
+    fetch('quotes-data.json').then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(payload => {
+      // quotes-data.json is the contract with the pipeline repo; SCHEMA.md in
+      // both repos is the spec. v1 was a bare array, later versions wrap it as
+      // {v, generated, rows}. Accept both: the two repos deploy independently,
+      // so either side can land first and neither order may break the page.
+      const isV1 = Array.isArray(payload);
+      const version = isV1 ? { major: 1, minor: 0 } : parseSchemaVersion(payload.v);
+      const data = isV1 ? payload : (payload.rows || []);
+      // Shaped in a way this code cannot read: say so rather than rendering a
+      // quietly incomplete corpus.
+      if (version.major > SCHEMA_SUPPORTED.major) {
+        this.setState({ schemaAhead: version.major + '.' + version.minor });
+        return;
+      }
+      // Readable but newer. Render it all, and warn: the likely cause is a
+      // taxonomy value added upstream that has no chip label in this page.
+      const minorAhead = version.major === SCHEMA_SUPPORTED.major
+        && version.minor > SCHEMA_SUPPORTED.minor;
+      data.forEach((q, i) => {
+        // Stable, content-addressed id from 2.1.0 on. Older payloads have none,
+        // so fall back to position -- good enough as a render key, but not a
+        // durable reference to a quote, which is the whole point of the field.
+        // `_noLink` is what costs those rows their Share button: a link built
+        // on a position would point at a different statement after the next
+        // export, which is worse than not offering one.
+        if (!q.id) { q.id = 'i' + i; q._noLink = true; }
+        const rt = q.rt || {};
+        // one flat set of refined keys per quote. `p` (primary), `r` (risks)
+        // and `i` (instruments) overlap -- governance_development shows up in
+        // both r and i -- so matching against the union keeps the Risk area and
+        // Policy instrument filters honest without double-counting.
+        q._rk = [...new Set([].concat(rt.p ? [rt.p] : [], rt.r || [], rt.i || []))];
+        // Precomputed haystack. Beyond saving a concat+lowercase of the whole
+        // dataset on every keystroke, this is what finally makes the refined
+        // taxonomy searchable: before, typing "loss of control" matched nothing
+        // even when the tag was sitting on the card.
+        q._h = (q.q + ' ' + q.s + ' ' + (q.c || '') + ' ' + (q.r || '') + ' ' + (q.sd || '') + ' '
+          + q._rk.map(k => REFLABELS[k] || '').join(' ') + ' '
+          + q.t.map(c => (TAGMETA[c] || {}).label || '').join(' ')).toLowerCase();
+      });
+      this.setState({ data, loaded: true, minorAhead, options: this.buildOptions(data) });
+    }).catch(() => this.setState({ error: true }));
+  }
+  componentDidUpdate() {
+    this.scrollToDirectory();
+    // The page behind an open dialog must not scroll under it -- on a phone a
+    // flick aimed at the passage otherwise takes the directory with it. Written
+    // to the element rather than held in state because it is not something the
+    // render reads back.
+    document.body.style.overflow = this.state.utId ? 'hidden' : '';
+    this.revealQuote();
+  }
+  /** Open the passage *at* the quote, not at the top of the record.
+   *
+   *  Up to 12,000 characters arrive, and the reader came to see where their
+   *  twenty of them sit in it. Landing at the top of a wall of text and making
+   *  them hunt is the difference between the panel working and the panel being
+   *  a chore -- and the records with no paragraph breaks at all, which is a
+   *  fair number of the written ones, are exactly the ones where hunting is
+   *  hardest. Once per opening: the flag is the id, so a re-render from a
+   *  keystroke behind the dialog cannot yank the passage back. */
+  revealQuote() {
+    const id = this.state.utId;
+    if (!id) { this._utShown = null; return; }
+    if (this._utShown === id) return;
+    // The click opens the panel and the shard arrives a moment later, so the
+    // first pass through here has nothing to reveal yet. Spending the flag on
+    // it would mean the pass that *does* have the passage never runs -- which
+    // is exactly the bug this line exists to prevent, and it fails silently, as
+    // a panel that opens at the top of a record it was asked to open in the
+    // middle of.
+    const file = utFile(id);
+    if (!this.state.utShards[file] && !this.state.utFail[file]) return;
+    const box = document.querySelector('.utbox');
+    if (!box) return;
+    const mark = box.querySelector('.utbody mark');
+    const body = box.querySelector('.utbody');
+    if (!body) return;
+    this._utShown = id;
+    // Focus goes to the scrolling element, not to the dialog around it: a
+    // keyboard reader who cannot scroll the passage has been handed a box of
+    // text and no way through it.
+    body.focus({ preventScroll: true });
+    // Measured rather than taken from offsetTop, which is relative to whichever
+    // ancestor happens to be positioned -- here the box, so it would carry the
+    // header's height as an error. A third of the way down leaves the run-up to
+    // the quote visible above it.
+    if (mark) {
+      const delta = mark.getBoundingClientRect().top - body.getBoundingClientRect().top;
+      body.scrollTop = Math.max(0, body.scrollTop + delta - body.clientHeight / 3);
+    }
+  }
+  componentWillUnmount() {
+    window.removeEventListener('hashchange', this.syncRoute);
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('keydown', this.onKey);
+    document.body.style.overflow = '';
+    clearTimeout(this._flashT);
+  }
+  /** Option lists per dimension, ordered by overall frequency so the popover
+   *  opens on what the corpus actually talks about. Built once: the live counts
+   *  shown against each option move with the filters, this ordering does not,
+   *  because a list that reshuffles under the cursor cannot be scanned. */
+  buildOptions(data) {
+    const tally = keyer => {
+      const c = {};
+      for (const q of data) for (const k of keyer(q)) if (k) c[k] = (c[k] || 0) + 1;
+      return c;
+    };
+    const byCount = (c, entries) => entries
+      .filter(e => c[e.value])
+      .sort((a, b) => (c[b.value] || 0) - (c[a.value] || 0));
+    const rk = tally(q => q._rk);
+    const jc = tally(q => [q.j]);
+    const sc = tally(q => [q.s]);
+    const known = JURIS.filter(j => j.id !== 'WORLD').map(j => ({ value: j.id, label: j.label }));
+    const unknown = Object.keys(jc).filter(c => !jmap[c]).sort().map(c => ({ value: c, label: c }));
+    return {
+      topic: TOPICS.map(t => ({ value: t.id, label: t.label })),
+      jur: byCount(jc, known.concat(unknown)),
+      risk: byCount(rk, Object.keys(REFRISK).map(k => ({ value: k, label: REFRISK[k] }))),
+      instrument: byCount(rk, Object.keys(REFINSTR).map(k => ({ value: k, label: REFINSTR[k] }))),
+      stance: STANCES.map(s => ({ value: s.v, label: s.label })),
+      speaker: byCount(sc, Object.keys(sc).filter(n => n && n !== 'Unknown').map(n => ({ value: n, label: n })))
+    };
+  }
+  renderVals() {
+    const st = this.state;
+    // Fifteen, not twenty-five: the directory is the bottom of a long page and
+    // the FAQ sits under it, so a first helping the reader can get to the end
+    // of beats one that runs on past the point they were still reading. "Load
+    // more" is one click and adds another fifteen.
+    const pageSize = this.props.pageSize ?? 15;
+    const limit = st.limit || pageSize;
+    const needle = st.search.trim().toLowerCase();
+    const OPTS = st.options || {};
+
+    // --- selection state -----------------------------------------------
+    // `sel` is one array of chosen values per dimension. Null means "never
+    // touched", which resolves to the defaults the props ask for.
+    const defaults = () => {
+      const d = emptySel();
+      d.topic = (SCOPE_TOPICS[this.props.defaultScope ?? 'frontier'] || FRONT).slice();
+      const j = this.props.defaultJurisdiction ?? 'EU';
+      if (j && j !== 'WORLD') d.jur = [j];
+      return d;
+    };
+    const dflt = defaults();
+    const sel = st.sel || dflt;
+    const sets = {}; DIMS.forEach(d => { sets[d.key] = new Set(sel[d.key] || []); });
+    const active = DIMS.filter(d => sets[d.key].size);
+    // `skip` leaves one dimension out, which is how a dimension's own option
+    // counts stay useful: they answer "what would I get if I picked this too",
+    // not "what is already selected".
+    const pass = (q, skip) => {
+      for (const d of active) {
+        if (d.key === skip) continue;
+        let hit = false;
+        for (const k of d.keys(q)) if (sets[d.key].has(k)) { hit = true; break; }
+        if (!hit) return false;
+      }
+      return true;
+    };
+    const setSel = (key, values) => this.setState(s => ({
+      sel: { ...(s.sel || dflt), [key]: values }, limit: 0
+    }));
+    const toggleSel = (key, v) => this.setState(s => {
+      const cur = (s.sel || dflt)[key] || [];
+      return {
+        sel: { ...(s.sel || dflt), [key]: cur.includes(v) ? cur.filter(x => x !== v) : cur.concat([v]) },
+        limit: 0
+      };
+    });
+    // Tag shortcuts narrow rather than toggle. Toggling reads backwards on a
+    // quote card: clicking the AGI tag of an AGI quote would drop AGI from the
+    // default selection and hide the very quote that was clicked. Narrowing to
+    // the one value answers "show me the others like this", and clicking it
+    // again -- when it is already the whole selection -- lets the value go.
+    const focusSel = (key, v) => this.setState(s => {
+      const cur = (s.sel || dflt)[key] || [];
+      const only = cur.length === 1 && cur[0] === v;
+      return { sel: { ...(s.sel || dflt), [key]: only ? [] : [v] }, limit: 0 };
+    });
+    const openDim = key => this.setState(s => ({ open: s.open === key ? null : key, optSearch: '' }));
+
+    const searchOk = q => !needle || q._h.includes(needle);
+
+    // --- months (full domain) + brush range ------------------------------
+    let months = [];
+    if (st.data.length) {
+      const keys = st.data.map(q => q.d.slice(0, 7));
+      let lo = keys.reduce((a, b) => a < b ? a : b), hi = keys.reduce((a, b) => a > b ? a : b);
+      let [y, m] = lo.split('-').map(Number);
+      const [hy, hm] = hi.split('-').map(Number);
+      while (y < hy || (y === hy && m <= hm)) { months.push(y + '-' + String(m).padStart(2, '0')); m++; if (m > 12) { m = 1; y++; } }
+    }
+    const midx = {}; months.forEach((k, i) => { midx[k] = i; });
+    const N = Math.max(months.length, 2);
+    const r0 = Math.max(0, Math.min(st.r0 ?? 0, N - 2));
+    const r1 = Math.max(r0 + 1, Math.min(st.r1 ?? N - 1, N - 1));
+    const dateOk = q => { const i = midx[q.d.slice(0, 7)]; return i != null && i >= r0 && i <= r1; };
+
+    const noDate = st.data.filter(q => pass(q) && searchOk(q));
+    const dirSet = noDate.filter(dateOk);
+    const voicesBase = st.data.filter(q => pass(q, 'speaker') && searchOk(q) && dateOk(q));
+
+    // --- relevance score + relevance↔recency sort slider ---
+    // weighted topic relevance: regulation + 2·agi + 2·x_risk + 3·asi + 3·rsi
+    const relScore = q => { const s = q.sc || {}; return (s.regulation || 0) + 2 * (s.agi || 0) + 2 * (s.x_risk || 0) + 3 * (s.asi || 0) + 3 * (s.rsi || 0); };
+    // slider w in [0,1]: 0 = purely most-relevant, 1 = purely most-recent. Blend
+    // normalized relevance with normalized recency so both weigh comparably across
+    // the full date span (the dataset covers ~4 years, so a raw age decay would
+    // bury everything but the last weeks — we scale recency over actual min..max).
+    const w = st.sortW ?? 0.5;
+    let maxRel = 1, minT = 0, spanT = 1, maxTv = 0;
+    if (st.data.length) {
+      maxRel = st.data.reduce((m, q) => Math.max(m, relScore(q)), 1);
+      const ts = st.data.map(q => Date.parse(q.d));
+      minT = ts.reduce((m, t) => Math.min(m, t), Infinity);
+      maxTv = ts.reduce((m, t) => Math.max(m, t), -Infinity);
+      spanT = Math.max(1, maxTv - minT);
+    }
+    const rankScore = q => (1 - w) * (relScore(q) / maxRel) + w * ((Date.parse(q.d) - minT) / spanT);
+    const dirSorted = dirSet.slice().sort((a, b) => rankScore(b) - rankScore(a));
+
+    // --- filter bar ------------------------------------------------------
+    const optNeedle = (st.optSearch || '').trim().toLowerCase();
+    // Only the open dimension needs live counts, so only it pays for a pass.
+    let facetCount = null;
+    const od = DIMS.find(d => d.key === st.open);
+    if (od) {
+      facetCount = {};
+      for (const q of st.data) {
+        if (!pass(q, od.key) || !searchOk(q) || !dateOk(q)) continue;
+        for (const k of od.keys(q)) if (k) facetCount[k] = (facetCount[k] || 0) + 1;
+      }
+    }
+    const chipDims = DIMS.filter(d => sets[d.key].size || st.open === d.key);
+    const filterChips = chipDims.map(d => {
+      const chosen = sel[d.key] || [];
+      const all = OPTS[d.key] || [];
+      const lbl = v => (all.find(o => o.value === v) || { label: v }).label;
+      const isOpen = st.open === d.key;
+      let options = [], truncated = 0;
+      if (isOpen) {
+        const matching = optNeedle ? all.filter(o => o.label.toLowerCase().includes(optNeedle)) : all;
+        // Order by what the option would actually yield right now. This is safe
+        // to do live because the counts hold this dimension out of the filter,
+        // so toggling options inside the open popover cannot reorder it under
+        // the cursor -- only a change elsewhere can, and that happens closed.
+        // Ordering by overall frequency instead would open the speaker list on
+        // sixty zeroes the moment a jurisdiction is picked. Sort is stable, so
+        // buildOptions' overall-frequency order breaks the ties.
+        const live = o => (facetCount ? facetCount[o.value] || 0 : 0);
+        const byLive = matching.slice().sort((a, b) => live(b) - live(a));
+        // Only a truncated list hoists its selections. It has to: a selected
+        // speaker whose live count fell to zero would otherwise sort past the
+        // cut and become impossible to see or switch off. A list that renders
+        // in full needs no hoist, and is better without one -- nothing should
+        // jump out from under the cursor on the click that selects it.
+        const ranked = matching.length > OPT_LIMIT
+          ? byLive.filter(o => chosen.includes(o.value))
+            .concat(byLive.filter(o => !chosen.includes(o.value)))
+          : byLive;
+        truncated = Math.max(0, ranked.length - OPT_LIMIT);
+        options = ranked.slice(0, OPT_LIMIT).map(o => {
+          const on = chosen.includes(o.value);
+          return {
+            label: o.label, on, mark: on ? '✓' : '',
+            count: facetCount ? (facetCount[o.value] || 0) : 0,
+            rowBg: on ? 'rgba(1,31,84,.06)' : 'transparent',
+            rowFg: on ? '#011f54' : '#374151',
+            boxBg: on ? '#011f54' : 'transparent',
+            boxBorder: on ? '#011f54' : '#e5e7eb',
+            // round box for the single-select dimension, so the control says
+            // "one of these" before the reader finds out by clicking
+            boxRadius: d.single ? '50%' : '0',
+            onClick: d.single ? () => setSel(d.key, [o.value]) : () => toggleSel(d.key, o.value)
+          };
+        });
+      }
+      const n = chosen.length;
+      // spell the selection out while it still fits on the chip -- the default
+      // Topic selection reads "AGI, ASI, RSI, Risk", which says what the page
+      // is showing far better than "4 selected" does. Budget by width, not by
+      // count: four topic labels fit where two jurisdiction names do not.
+      const spelled = chosen.map(lbl).join(', ');
+      return {
+        label: d.label,
+        valueText: n === 0 ? 'Any' : spelled.length <= 34 ? spelled : n + ' selected',
+        clearTitle: 'Remove the ' + d.label.toLowerCase() + ' filter',
+        border: n ? '#011f54' : '#e5e7eb',
+        borderStyle: n ? 'solid' : 'dashed',
+        bg: n ? '#011f54' : '#ffffff', fg: n ? '#ffffff' : '#374151',
+        isOpen, options,
+        searchable: !!d.searchable && all.length > 8,
+        searchHint: 'Search ' + d.label.toLowerCase() + '…',
+        noOptions: isOpen && options.length === 0,
+        // "Select all" over a truncated list would select the visible 60 and
+        // quietly imply it selected everything, so it hides instead -- as does
+        // "select all" of a dimension that only ever holds one value
+        canSelectAll: !truncated && !d.single && options.length > 1,
+        truncated: truncated > 0,
+        truncatedText: '+' + truncated + ' more, narrow with search',
+        selectAll: () => setSel(d.key, (optNeedle ? all.filter(o => o.label.toLowerCase().includes(optNeedle)) : all).map(o => o.value)),
+        clearAll: () => setSel(d.key, []),
+        onToggle: () => openDim(d.key),
+        onClear: () => this.setState(s => ({ sel: { ...(s.sel || dflt), [d.key]: [] }, open: null, limit: 0 }))
+      };
+    });
+    const addOptions = DIMS.filter(d => !sets[d.key].size && st.open !== d.key).map(d => ({
+      label: d.label, hint: (OPTS[d.key] || []).length + ' options',
+      onClick: () => this.setState({ open: d.key, optSearch: '' })
+    }));
+
+    // --- jurisdiction chips (the flag row is a shortcut into sel.jur) ----
+    const scoped = st.data.filter(q => pass(q, 'jur') && searchOk(q) && dateOk(q));
+    const jCounts = { WORLD: scoped.length };
+    for (const q of scoped) jCounts[q.j] = (jCounts[q.j] || 0) + 1;
+    const jurChips = JURIS.filter(j => j.id === 'WORLD' || jCounts[j.id]).map(j => {
+      const world = j.id === 'WORLD';
+      const on = world ? !sets.jur.size : sets.jur.has(j.id);
+      return {
+        label: j.label, flag: j.flag, fw: flagW(j, 19, 13), count: jCounts[j.id] || 0,
+        border: on ? '#011f54' : '#e5e7eb',
+        bg: on ? '#011f54' : '#ffffff', fg: on ? '#ffffff' : '#374151',
+        onClick: world ? () => setSel('jur', []) : () => setSel('jur', [j.id])
+      };
+    });
+
+    // --- main chart: lines per topic, zoomed to brush range ---
+    const chartTopics = TOPICS.filter(t => !sets.topic.size || sets.topic.has(t.id));
+    const cum = {}; chartTopics.forEach(t => { cum[t.id] = new Array(N).fill(0); });
+    for (const q of dirSet) {
+      const i = midx[q.d.slice(0, 7)]; if (i == null) continue;
+      for (const c of q.t) if (cum[c]) cum[c][i]++;
+    }
+    chartTopics.forEach(t => { const a = cum[t.id]; for (let i = 1; i < N; i++) a[i] += a[i - 1]; });
+    const totals = {}; chartTopics.forEach(t => { totals[t.id] = cum[t.id][r1] || 0; });
+    const activeT = chartTopics.filter(t => totals[t.id] > 0);
+    const visible = activeT.filter(t => !st.hidden[t.id]);
+    let ymax = Math.max(5, ...visible.map(t => totals[t.id]));
+    // A 1-2-5 step scaled to the magnitude, aimed at ~6 gridlines whatever the
+    // total is. The old hand-written ladder topped out at a step of 200, so a
+    // Regulation line in the low thousands drew twenty-odd labels stacked into
+    // each other; this keeps the count flat as the axis grows.
+    const step = niceStep(ymax);
+    ymax = Math.ceil(ymax / step) * step;
+    const L = 56, R = 964, T = 16, B = 368;
+    const span = r1 - r0;
+    const X = i => L + ((i - r0) / span) * (R - L);
+    const Y = v => T + (1 - v / ymax) * (B - T);
+    const lines = visible.map(t => ({
+      d: cum[t.id].slice(r0, r1 + 1).map((v, i) => (i ? 'L' : 'M') + X(r0 + i).toFixed(1) + ' ' + Y(v).toFixed(1)).join(''),
+      color: t.color
+    }));
+    const yTicks = []; for (let v = 0; v <= ymax; v += step) yTicks.push({ y: Y(v), label: String(v), pct: (Y(v) / 400 * 100).toFixed(2) + '%', lx: (L / 980 * 100).toFixed(2) + '%' });
+    let xTicks = [];
+    for (let i = r0; i <= r1; i++) if (months[i] && months[i].endsWith('-01')) xTicks.push({ i, label: months[i].slice(0, 4) });
+    if (xTicks.length < 2) {
+      const k = Math.max(1, Math.round(span / 5)); xTicks = [];
+      for (let i = r0; i <= r1; i += k) if (months[i]) xTicks.push({ i, label: MN[Number(months[i].slice(5)) - 1] + ' ’' + months[i].slice(2, 4) });
+    }
+    xTicks = xTicks.map(t => ({ label: t.label, pct: (X(t.i) / 980 * 100).toFixed(2) + '%' }));
+    const legend = activeT.map(t => {
+      const on = !st.hidden[t.id];
+      return {
+        label: t.label, count: totals[t.id], dot: on ? t.color : '#d4d0ca',
+        bg: on ? '#ffffff' : 'rgba(1,31,84,.04)', fg: on ? '#011f54' : '#6b7280',
+        onClick: () => this.setState(s => ({ hidden: { ...s.hidden, [t.id]: !s.hidden[t.id] } }))
+      };
+    });
+    let tip = null, tipX = null;
+    if (st.tip != null && st.tip >= r0 && st.tip <= r1 && months[st.tip] != null) {
+      const mi = st.tip, k = months[mi];
+      tipX = X(mi);
+      const pct = (tipX / 980) * 100;
+      tip = {
+        label: MN[Number(k.slice(5)) - 1] + ' ' + k.slice(0, 4),
+        left: pct.toFixed(1) + '%',
+        shift: pct > 72 ? 'translateX(-105%)' : pct < 12 ? 'translateX(5%)' : 'translateX(-50%)',
+        rows: visible.map(t => ({ label: t.label, color: t.color, v: cum[t.id][mi] })).sort((a, b) => b.v - a.v)
+      };
+    }
+    const onChartMove = e => {
+      const r = e.currentTarget.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 980;
+      const mi = r0 + Math.round(((x - L) / (R - L)) * span);
+      const cl = Math.max(r0, Math.min(r1, mi));
+      if (cl !== st.tip) this.setState({ tip: cl });
+    };
+    // --- overview (stacked areas) + brush ---
+    const ovCum = {}; chartTopics.forEach(t => { ovCum[t.id] = new Array(N).fill(0); });
+    for (const q of noDate) {
+      const i = midx[q.d.slice(0, 7)]; if (i == null) continue;
+      for (const c of q.t) if (ovCum[c]) ovCum[c][i]++;
+    }
+    chartTopics.forEach(t => { const a = ovCum[t.id]; for (let i = 1; i < N; i++) a[i] += a[i - 1]; });
+    let ovTot = 0; chartTopics.forEach(t => { ovTot += ovCum[t.id][N - 1]; });
+    const ovMax = Math.max(5, ovTot);
+    const Xov = i => L + (i / (N - 1)) * (R - L);
+    const Yov = v => 8 + (1 - v / ovMax) * 94;
+    const ovAreas = [];
+    {
+      const lower = new Array(N).fill(0);
+      for (const t of chartTopics) {
+        const upper = lower.map((v, i) => v + ovCum[t.id][i]);
+        if (ovCum[t.id][N - 1] > 0) {
+          let d = '';
+          for (let i = 0; i < N; i++) d += (i ? 'L' : 'M') + Xov(i).toFixed(1) + ' ' + Yov(upper[i]).toFixed(1);
+          for (let i = N - 1; i >= 0; i--) d += 'L' + Xov(i).toFixed(1) + ' ' + Yov(lower[i]).toFixed(1);
+          ovAreas.push({ d: d + 'Z', fill: t.color + '66' });
+        }
+        for (let i = 0; i < N; i++) lower[i] = upper[i];
+      }
+    }
+    const brushDown = which => e => {
+      e.preventDefault();
+      const wrap = e.currentTarget.parentElement;
+      const move = ev => {
+        const rect = wrap.getBoundingClientRect();
+        const xs = ((ev.clientX - rect.left) / rect.width) * 980;
+        let idx = Math.round(((xs - L) / (R - L)) * (N - 1));
+        idx = Math.max(0, Math.min(N - 1, idx));
+        if (which === 0) this.setState(s => ({ r0: Math.min(idx, (s.r1 ?? N - 1) - 1), limit: 0, tip: null }));
+        else this.setState(s => ({ r1: Math.max(idx, (s.r0 ?? 0) + 1), limit: 0, tip: null }));
+      };
+      const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); };
+      window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+    };
+    const fmtMon = i => MN[Number(months[i].slice(5)) - 1] + ' ' + months[i].slice(0, 4);
+    // --- voices ---
+    const byS = {};
+    for (const q of voicesBase) { if (q.s && q.s !== 'Unknown') { (byS[q.s] = byS[q.s] || { count: 0, j: q.j, role: q.r || null }).count++; } }
+    const top = Object.entries(byS).sort((a, b) => b[1].count - a[1].count).slice(0, 6);
+    const maxV = top.length ? top[0][1].count : 1;
+    const voices = top.map(([name, v]) => ({
+      name, count: v.count, pct: ((v.count / maxV) * 100).toFixed(0) + '%',
+      role: v.role, hasRole: !!v.role,
+      flag: jentry(v.j).flag, fw: flagW(jentry(v.j), 17, 12),
+      border: sets.speaker.has(name) ? '#011f54' : '#e5e7eb',
+      bg: sets.speaker.has(name) ? 'rgba(1,31,84,.05)' : '#ffffff',
+      onClick: () => toggleSel('speaker', name)
+    }));
+    // --- directory ---
+    const fmt = d => { const [yy, mm, dd] = d.split('-'); return Number(dd) + ' ' + MN[Number(mm) - 1] + ' ' + yy; };
+    // A permalink (#q=<id>, handed out by each card's Share button) has to open
+    // its statement whatever the reader's filters -- or this page's own
+    // defaults -- would otherwise hide, so the linked quote replaces the
+    // directory listing rather than being filtered inside it. Everything above
+    // the directory goes on describing the filtered corpus: the link is about
+    // one statement, not about a different view of the whole thing.
+    const focusQ = st.focusId ? st.data.find(q => q.id === st.focusId) : null;
+    const dirList = st.focusId ? (focusQ ? [focusQ] : []) : dirSorted;
+    const clearFocus = () => {
+      // replaceState rather than assigning location.hash: it leaves neither a
+      // bare "#" in the address bar nor an extra entry to back out of. It fires
+      // no hashchange either, so syncRoute never runs and the state is cleared
+      // here by hand.
+      history.replaceState(null, '', location.pathname + location.search);
+      this.setState({ focusId: null });
+    };
+    // Regulation sits on 4,217 of ~4,900 quotes, so the chip carries no signal
+    // while the reader is looking at the frontier topics -- it only earns its
+    // place once Regulation is itself selected, or is all a quote has.
+    const showReg = !sets.topic.size || sets.topic.has('regulation');
+    const quotes = dirList.slice(0, limit).map(q => {
+      const jm = jentry(q.j);
+      // Built off the page's own address so it keeps working if the site moves;
+      // the hash is exactly what syncRoute reads back.
+      const link = location.origin + location.pathname + '#q=' + q.id;
+      // What someone pasting this into a document actually needs: the words,
+      // who said them and when, and where to check them.
+      // An `nv` row pasted elsewhere loses the page's typography along with the
+      // missing marks that signalled the caveat, so the note travels in the text.
+      const plain = showQuote(q.q, 'en', q.nv) + (q.nv ? ' ' + NVNOTE : '')
+        + ' — ' + q.s + (q.r ? ', ' + q.r : '') + ' (' + fmt(q.d) + ')\n' + q.u;
+      const flashed = k => st.flash === q.id + '|' + k;
+      // Clicking the quote opens the passage it was cut from -- the affordance
+      // a reader reaches for before they look for a button. Two things it must
+      // not do: swallow the source link inside the blockquote, and fire at the
+      // end of a drag that was selecting the words to copy them. Both are
+      // decided here rather than by narrowing the target, because the target is
+      // the point: the whole quote is what invites the click.
+      const openUt = e => {
+        if (!q.ul) return;
+        if (e && e.target && e.target.closest && e.target.closest('a')) return;
+        const picked = window.getSelection && window.getSelection();
+        if (picked && !picked.isCollapsed) return;
+        this.openUtterance(q.id);
+      };
+      const shareSheet = () => {
+        // On a phone "share" means the OS sheet, which can hand the link to
+        // whichever app the reader had in mind. A desktop browser's sheet
+        // mostly cannot, so there the useful thing is the link on the
+        // clipboard. A dismissed sheet rejects, and is not an error.
+        navigator.share({ title: q.s + ' on AI policy', url: link }).catch(() => {});
+      };
+      // every tag is a filter shortcut: clicking one adds it to the matching
+      // dimension, which is how a reader gets from "this quote is interesting"
+      // to "show me the others like it"
+      const coarse = c => ({ ...TAGMETA[c], onClick: () => focusSel('topic', c), title: 'Show only topic: ' + TAGMETA[c].label });
+      let tags = q.t.filter(c => showReg || c !== 'regulation' || q.t.length === 1).map(coarse).filter(t => t.label);
+      if (q.rt) {
+        // refined chips supersede the coarse Risk/Regulation ones: frontier
+        // tags stay, then refined risks/instruments with the primary first.
+        const frontier = q.t.filter(c => FRONT.includes(c) && c !== 'x_risk').map(coarse);
+        const instruments = q.rt.i || [];
+        const ordered = [...new Set([q.rt.p, ...(q.rt.r || []), ...instruments])]
+          .filter(k => REFLABELS[k]);
+        tags = frontier.concat(ordered.map(k => {
+          const isInstr = !REFRISK[k];
+          return {
+            label: REFLABELS[k],
+            fg: isInstr ? '#374151' : '#c1121f',
+            bg: isInstr ? 'rgba(1,31,84,.07)' : 'rgba(193,18,31,.10)',
+            title: 'Show only ' + (isInstr ? 'policy instrument' : 'risk area') + ': ' + REFLABELS[k],
+            onClick: () => focusSel(isInstr ? 'instrument' : 'risk', k)
+          };
+        }));
+      }
+      return {
+        eq: showQuote(q.q, 'en', q.nv), s: q.s, role: q.r || null, c: q.c, u: q.u, o: q.o,
+        sl: q.sl || null, hasProfile: !!q.sl, noProfile: !q.sl,
+        sd: q.sd || null, hasDesc: !!q.sd,
+        // Portrait (schema 2.2.0). Roughly a third of rows have none -- an
+        // institution, or a legislator Wikidata could not unambiguously
+        // identify -- so the monogram is not an edge case, it is the second
+        // half of the design. It is always rendered and the portrait sits on
+        // top of it, so the 38px box is the same either way and the attribution
+        // lines stay aligned down a page of mixed rows.
+        si: q.si || null, hasPortrait: !!q.si,
+        initials: monogram(q.s),
+        oq: q.o ? showQuote(q.o, q.l, q.nv) : '', lang: q.l,
+        provNote: provNote(q),
+        flag: jm.flag, fw: flagW(jm, 15, 11), jname: jm.label, dateFmt: fmt(q.d), tags,
+        stance: q.st, hasCtx: !!q.c, hasOrig: !!q.o, noOrig: !q.o,
+        onCopy: () => this.copyText(plain).then(
+          () => this.flash(q.id, 'copied'), () => this.flash(q.id, 'copyfail')),
+        copyLabel: flashed('copied') ? 'Copied' : flashed('copyfail') ? 'Copy failed' : 'Copy',
+        copyCls: flashed('copied') || flashed('copyfail') ? 'qact-on' : '',
+        copyTitle: 'Copy the quote with its attribution and source link',
+        // Rows from a payload older than schema 2.1.0 carry no id of their own,
+        // so there is nothing durable to link to and no Share button on them.
+        canShare: !q._noLink,
+        onShare: () => {
+          if (navigator.share && matchMedia('(pointer:coarse)').matches) return shareSheet();
+          this.copyText(link).then(
+            () => this.flash(q.id, 'shared'), () => this.flash(q.id, 'sharefail'));
+        },
+        shareLabel: flashed('shared') ? 'Link copied' : flashed('sharefail') ? 'Copy failed' : 'Share',
+        shareCls: flashed('shared') || flashed('sharefail') ? 'qact-on' : '',
+        shareTitle: 'A link straight to this statement',
+        // Surrounding remarks (schema 2.5.0). `ul` is the whole test: the
+        // sidecar is not fetched until a click, so a card with no key offers no
+        // affordance rather than offering one that opens an empty panel.
+        hasUt: !!q.ul, qqCls: q.ul ? 'qq' : '',
+        utTitle: q.ul ? 'Read the passage this was taken from' : null,
+        onUtterance: openUt
+      };
+    });
+    // --- the surrounding remarks, for whichever quote asked for them ---
+    // Read out of `data` rather than out of `quotes`, so the panel survives the
+    // reader changing a filter under it: what is open is a statement, not a row
+    // of the current listing.
+    const utQ = st.utId ? st.data.find(q => q.id === st.utId) : null;
+    let ut = null;
+    if (utQ) {
+      const file = utFile(utQ.id);
+      const recs = st.utShards[file];
+      const rec = recs ? recs[utQ.id] : null;
+      const jm = jentry(utQ.j);
+      // The passage is the record, untranslated -- there is no MT pass over
+      // five thousand full transcripts -- and it says so by being in the
+      // language it is in. `lang` on the element carries that to a screen
+      // reader; a line of prose under every foreign-language passage said the
+      // same thing to everybody else, over and over, and is gone.
+      const notes = [];
+      if (rec && rec.x) {
+        notes.push({ text: 'An excerpt: the record runs longer than this, and what is shown is the passage around the quote.' });
+      }
+      if (utQ.asr) {
+        notes.push({ text: ASRNOTE + ' — a machine transcript of the audio, so the wording, and speaker names especially, are not guaranteed.' });
+      }
+      if (utQ.nv) {
+        notes.push({ text: NVNOTE + ' — the quote is somebody else’s rendering of what was said; this is the record it was taken from.' });
+      }
+      ut = {
+        title: 'The passage around a statement by ' + utQ.s,
+        s: utQ.s, role: utQ.r || null, hasRole: !!utQ.r, dateFmt: fmt(utQ.d), u: utQ.u,
+        flag: jm.flag, fw: flagW(jm, 15, 11), jname: jm.label,
+        occasion: (rec && rec.sc) || null, hasOccasion: !!(rec && rec.sc),
+        lang: (rec && rec.l) || null,
+        loading: !recs && !st.utFail[file],
+        // A shard that arrived without this id is the same dead end as one that
+        // never arrived at all, and gets the same answer: the source link. It
+        // means the payload and the sidecar came from different exports.
+        failed: !!st.utFail[file] || !!(recs && !rec),
+        ready: !!rec,
+        html: rec ? { __html: utHtml(rec) } : null,
+        notes, hasNotes: notes.length > 0,
+        close: this.closeUtterance,
+        // the backdrop closes on a click; this is what keeps a click that
+        // landed on the panel from reaching it
+        stop: e => e.stopPropagation()
+      };
+    }
+    const sameSel = DIMS.every(d => {
+      const a = sel[d.key] || [], b = dflt[d.key] || [];
+      return a.length === b.length && a.every(v => b.includes(v));
+    });
+    const anyFilter = !!(needle || !sameSel || st.r0 != null || st.r1 != null);
+    const nfmt = n => n.toLocaleString('en-US');
+    const onMethod = st.method;
+    return {
+      isMethod: onMethod, isMain: !onMethod, ut,
+      // the standfirst rides with the title on both pages -- it says what the
+      // whole thing is, which is if anything more use next to the method notes
+      // than next to the tracker they describe
+      // visibility, not display: the inactive one keeps its space so the pair's
+      // slot is one width across both pages (and stays untabbable either way)
+      headAbout: onMethod ? 'hidden' : 'visible',
+      headBack: onMethod ? 'visible' : 'hidden',
+      // the fixed bar is laid out at all times and only moved into view, so the
+      // transition has something to animate from; pointer-events keeps the
+      // parked copy from swallowing clicks meant for the masthead under it
+      barShift: st.stuck ? 'translateY(0)' : 'translateY(-102%)',
+      barOpacity: st.stuck ? '1' : '0',
+      barEvents: st.stuck ? 'auto' : 'none',
+      mdLoading: onMethod && !st.md && !st.mdErr,
+      mdFailed: onMethod && st.mdErr,
+      mdReady: onMethod && !!st.md,
+      // rendered on demand rather than memoised: the method page is one screen
+      // of prose that only re-renders when something else on the page changes
+      mdHtml: st.md ? { __html: mdToHtml(st.md) } : null,
+      faqReady: !onMethod && !!st.faq,
+      faqFailed: !onMethod && st.faqErr,
+      // memoised, unlike the method page's above: the FAQ hangs off the tracker,
+      // which re-renders on every keystroke in the search box, and re-parsing
+      // the same file each time would put that work on the typing path. The
+      // file is fetched once, so one parse is all it can ever need.
+      faqHtml: st.faq ? (this._faqHtml || (this._faqHtml = { __html: mdToHtml(st.faq) })) : null,
+      mailto: MAILTO,
+      filterChips, addOptions, noAddOptions: addOptions.length === 0,
+      addOpen: st.open === 'add', popOpen: st.open != null,
+      toggleAdd: () => this.setState(s => ({ open: s.open === 'add' ? null : 'add', optSearch: '' })),
+      closePop: () => this.setState({ open: null }),
+      optSearch: st.optSearch || '',
+      onOptSearch: e => this.setState({ optSearch: e.target.value }),
+      matchText: st.loaded ? nfmt(dirSet.length) + ' of ' + nfmt(st.data.length) + ' statements' : '',
+      jurChips,
+      legend, lines, yTicks, xTicks, tip, tipX, onChartMove,
+      ovAreas,
+      brushX0: (Xov(r0) / 980 * 100).toFixed(2) + '%', brushX1: (Xov(r1) / 980 * 100).toFixed(2) + '%',
+      shadeLW: (Xov(r0) / 980 * 100).toFixed(2) + '%', shadeRW: ((980 - Xov(r1)) / 980 * 100).toFixed(2) + '%',
+      brushDown0: brushDown(0), brushDown1: brushDown(1),
+      brushFromLabel: months.length ? fmtMon(r0) : '', brushToLabel: months.length ? fmtMon(r1) : '',
+      onChartLeave: () => this.setState({ tip: null }),
+      voices, speakerActive: !!sets.speaker.size, clearSpeaker: () => setSel('speaker', []),
+      speakerBanner: sets.speaker.size ? sel.speaker.join(', ') : null,
+      search: st.search, onSearch: e => this.setState({ search: e.target.value, limit: 0 }),
+      anyFilter,
+      sortWPct: Math.round(w * 100),
+      // snap ("lock in") to the 50/50 midpoint within a small detent so it's
+      // easy to return to an even relevance/recency blend.
+      onSortW: e => { const v = Number(e.target.value);
+        this.setState({ sortW: Math.abs(v - 50) <= 6 ? 0.5 : v / 100, limit: 0 }); },
+      sortLabel: w <= 0.02 ? 'Relevant' : w >= 0.98 ? 'Recent' : '',
+      // Numeric twin of the brush handles. The range must stay at least two
+      // months wide (the chart needs a span to draw across), so picking a
+      // first month past the current last one pushes the other end along
+      // instead of refusing the click.
+      monthOpts: months.map(k => ({ v: k })),
+      fromMonth: months[r0] || '', toMonth: months[r1] || '',
+      onFromMonth: e => { const i = midx[e.target.value]; if (i == null) return;
+        this.setState(s => { const a = Math.min(i, N - 2);
+          return { r0: a, r1: Math.max(s.r1 ?? N - 1, a + 1), limit: 0, tip: null }; }); },
+      onToMonth: e => { const i = midx[e.target.value]; if (i == null) return;
+        this.setState(s => { const b = Math.max(i, 1);
+          return { r1: b, r0: Math.min(s.r0 ?? 0, b - 1), limit: 0, tip: null }; }); },
+      resetFilters: () => this.setState({ search: '', sel: null, limit: 0, r0: null, r1: null, open: null }),
+      isLoading: !st.loaded && !st.error && !st.schemaAhead, loadFailed: st.error,
+      schemaAhead: !!st.schemaAhead,
+      minorAhead: !!st.minorAhead,
+      retryLoad: () => location.reload(),
+      mainOpacity: st.loaded ? '1' : '0.35',
+      quotes, isEmpty: st.loaded && dirList.length === 0,
+      // The empty box says which kind of nothing this is: no match for the
+      // filters, or a link to a statement this copy of the data does not have.
+      emptyText: st.focusId
+        ? 'That statement is not in this data. The link may have been made against an older version of the corpus.'
+        : 'No quotes match these filters.',
+      isFocused: !!st.focusId, clearFocus,
+      showingText: (st.error || st.schemaAhead) ? 'Data unavailable'
+        : !st.loaded ? 'Loading…'
+        : st.focusId ? 'One linked statement'
+        : 'Showing ' + Math.min(limit, dirList.length) + ' of ' + dirList.length,
+      hasMore: dirList.length > limit, moreCount: Math.min(pageSize, dirList.length - limit),
+      loadMore: () => this.setState({ limit: limit + pageSize })
+    };
+  }
+}
+</script>
+</body>
+</html>
