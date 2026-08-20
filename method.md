@@ -1,6 +1,6 @@
 # About
 
-This is an analysis of statements related to AGI, its risks, and policy approaches, coming from officials at governments and intergovernmental organisations. It covers ~5 million utterances from ~200,000 documents, sourced from 18 countries and intergovernmental organisations. It is particularly useful for AI safety policy work. If you work in AI safety policy or advocacy, feel free to request the raw data via the button at the bottom of this page.
+This is an analysis of statements related to AGI, its risks, and policy approaches, coming from officials at governments and intergovernmental organisations. It covers ~5 million utterances from ~200,000 documents, sourced from 19 countries and intergovernmental organisations. It is particularly useful for AI safety policy work. If you work in AI safety policy or advocacy, feel free to request the raw data via the button at the bottom of this page.
 
 
 
@@ -34,6 +34,7 @@ We give a summary of data sources by government or intergovernmental organisatio
 * **Russia**: Quotes are sourced from Presidential Executive Office speeches, transcripts and readouts via the by-date event HTML archive of [kremlin.ru](https://kremlin.ru), and from State Duma Plenary Stenograms via the database at [transcript.duma.gov.ru](https://transcript.duma.gov.ru).  
 * **Singapore**: Quotes are sourced from Parliament Hansard via the report backend of the parliamentary reports service ([sprs.parl.gov.sg](https://sprs.parl.gov.sg)).  
 * **Brazil**: Quotes are sourced from Senado Federal floor speeches via the Dados Abertos API ([legis.senado.leg.br](https://legis.senado.leg.br)), which lists every pronouncement of a period with the house's own summaries and subject tags; the verbatim text is then fetched for those whose metadata matches the keywords.  
+* **Mexico**: Quotes are sourced from Senado de la República plenary versiones estenográficas via [senado.gob.mx](https://www.senado.gob.mx).  
 * **Australia**: Quotes are sourced from House of Representatives and Senate Hansard via the transcript API behind the Hansard viewer of [aph.gov.au](https://www.aph.gov.au).  
 * **Taiwan**: Quotes are sourced from Legislative Yuan gazette records via an unofficial mirror called LYAPI ([v2.ly.govapi.tw](https://v2.ly.govapi.tw)).  
 * **Switzerland**: Quotes are sourced from the Amtliches Bulletin of the Nationalrat and Ständerat via the OData service of [parlament.ch](https://www.parlament.ch).

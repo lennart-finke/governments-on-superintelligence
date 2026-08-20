@@ -303,6 +303,10 @@ img[src*="%E9%83%AD%E5%9C%8B%E6%96%87%E5%A7%94%E5%93%A1"]{object-fit:contain !im
         <div onPointerDown="{{ brushDown1 }}" style="position:absolute;top:0;bottom:0;width:20px;transform:translateX(-50%);cursor:ew-resize;display:flex;align-items:center;justify-content:center;touch-action:none;left:{{ brushX1 }}"><div style="width:5px;height:70%;background:#011f54;box-shadow:0 0 0 2px #ffffff"></div></div>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:#374151;margin-top:6px"><span>{{ brushFromLabel }}</span><span>{{ brushToLabel }}</span></div>
+      <!-- Where collection stopped. Without it the end of the axis is
+           ambiguous: the reader cannot tell a quiet fortnight from an
+           uncollected one, and neither can a flat cumulative line. -->
+      <sc-if value="{{ collectedNote }}"><p style="margin:9px 0 0;font-size:12px;color:#6b7280">{{ collectedNote }}</p></sc-if>
     </div>
     <aside class="vocal-panel">
       <h2 style="font-family:'Varela',system-ui,sans-serif;font-size:23px;font-weight:700;margin:0 0 4px">Most vocal</h2>
@@ -544,43 +548,37 @@ const jentry = code => jmap[code] || { id: code, label: code, flag: intlIcon };
 //                  in practice a taxonomy value with no chip label here. Render
 //                  everything and say so, rather than dropping tags in silence.
 // Raise these together with the code that reads whatever the new version added.
-const SCHEMA_SUPPORTED = { major: 2, minor: 5 };
+const SCHEMA_SUPPORTED = { major: 2, minor: 8 };
 
-// --- the utterance sidecar (schema 2.5.0) ----------------------------------
-// A quote is a span cut out of something longer, and `ul` on a row is the
-// pipeline saying how much longer -- the length of the passage it shipped for
-// that quote. The passages themselves are 25 MB, so they are not in the payload
-// every visitor downloads: they sit in `utterances-<n>.json` next to it and are
-// fetched on a click, one shard at a time.
-//
-// Which shard is arithmetic on the id, not a lookup, so nothing has to be
-// loaded to know where to look -- a manifest mapping five thousand ids to eight
-// files would cost more than the sharding saves. Keep this in step with
-// export/utterances.py:shard_of; the two are one rule written twice, and a
-// mismatch reads as "no remarks here" rather than as an error, because the
-// shard it lands in is a perfectly valid file that simply lacks the id.
 const UT_SHARDS = 8;
 const utFile = id => 'utterances-' + (parseInt(id[0], 16) % UT_SHARDS) + '.json';
-// The passage with the quote marked inside it. Paragraph breaks are the one
-// piece of the record's formatting the sidecar keeps (`\n\n`), and the span may
-// run across one, so the highlight is applied per paragraph rather than as a
-// single <mark> that would have to be opened and closed across a </p>.
-// Escaped by hand for the same reason the Markdown renderer escapes: this is
-// government prose out of a machine parser, not markup, and none of it should
-// ever be read as any.
+// A third of the quotes are abridged -- verbatim segments of the record joined
+// by [...], with material between them the card leaves out -- so the highlight
+// is a LIST of spans, `ss`, one mark per segment. `s` is the whole quote end to
+// end and is what a record with nothing elided carries on its own; marking it
+// for an abridged quote would highlight the elided material too.
+const utSpans = rec => (rec.ss && rec.ss.length ? rec.ss : rec.s ? [rec.s] : [])
+  .filter(v => v && v.length === 2 && v[1] > v[0]);
 const utHtml = rec => {
-  const s = rec.s && rec.s.length === 2 ? rec.s : null;
+  const spans = utSpans(rec);
   let at = 0, out = '';
   for (const para of String(rec.t || '').split('\n\n')) {
     const a = at, b = at + para.length;
     at = b + 2;
-    if (s && s[1] > a && s[0] < b) {
-      const lo = Math.max(s[0], a) - a, hi = Math.min(s[1], b) - a;
-      out += '<p>' + mdEsc(para.slice(0, lo)) + '<mark>' + mdEsc(para.slice(lo, hi))
-        + '</mark>' + mdEsc(para.slice(hi)) + '</p>';
-    } else {
-      out += '<p>' + mdEsc(para) + '</p>';
+    // Offsets are into the whole passage, so each paragraph takes the slice of
+    // every span that lands in it -- a span may cross a break, and a paragraph
+    // may hold several. `cut` is how far into this paragraph has been written
+    // out; it also makes a span that somehow overlaps its predecessor render as
+    // one mark rather than as nested tags.
+    let cut = 0, html = '';
+    for (const sp of spans) {
+      if (sp[1] <= a || sp[0] >= b) continue;
+      const lo = Math.max(Math.max(sp[0], a) - a, cut), hi = Math.min(sp[1], b) - a;
+      if (hi <= lo) continue;
+      html += mdEsc(para.slice(cut, lo)) + '<mark>' + mdEsc(para.slice(lo, hi)) + '</mark>';
+      cut = hi;
     }
+    out += '<p>' + html + mdEsc(para.slice(cut)) + '</p>';
   }
   return out;
 };
@@ -877,7 +875,7 @@ const OPT_LIMIT = 60;
 const emptySel = () => ({ topic: [], jur: [], risk: [], instrument: [], stance: [], speaker: [] });
 
 class Component extends DCLogic {
-  state = { data: [], loaded: false, error: false, sel: null, hidden: {}, search: '', sort: null, limit: 0, tip: null, r0: null, r1: null, open: null, optSearch: '', method: false, md: null, mdErr: false, faq: null, faqErr: false, stuck: false, focusId: null, flash: null, utId: null, utShards: {}, utFail: {} };
+  state = { data: [], loaded: false, error: false, sel: null, hidden: {}, search: '', sort: null, limit: 0, tip: null, r0: null, r1: null, open: null, optSearch: '', method: false, md: null, mdErr: false, faq: null, faqErr: false, collected: null, stuck: false, focusId: null, flash: null, utId: null, utShards: {}, utFail: {} };
   // one in-flight fetch per Markdown file, keyed by filename
   _docs = {};
   // and one per utterance shard, for the same reason
@@ -889,30 +887,12 @@ class Component extends DCLogic {
   syncRoute = () => {
     const hash = location.hash;
     const on = hash === '#method';
-    // The exporter's ids are 16 hex characters (SCHEMA.md), but the pattern is
-    // kept loose on purpose: an id this page cannot find has to be handled as a
-    // dead link anyway, and a mistyped one deserves the same answer.
     const q = /^#q=([\w-]{1,64})$/.exec(hash);
-    // stuck goes with the scroll position reset below: the scroll listener would
-    // clear it a frame later anyway, and a bar that flashes in between is worse
     this.setState({ method: on, focusId: q ? q[1] : null, stuck: false });
-    // Each page fetches its own prose, and only once it is the page being
-    // looked at. The FAQ is not behind a link the way the method notes are --
-    // it is the last section of the tracker -- so entering that route is the
-    // whole trigger.
     if (on) this.loadDoc('method.md', 'md');
     else this.loadDoc('faq.md', 'faq');
-    // A quote permalink is the one route that does not begin at the top of the
-    // page: the directory sits below the chart, so landing at the top would put
-    // the statement the link was about off-screen. The scroll waits for the
-    // data -- until it arrives there is no card to scroll to.
     if (q) { this._toDirectory = true; this.scrollToDirectory(); return; }
-    // An anchor that names something on the page -- #faq -- is the browser's
-    // own business: it has already jumped there, and scrolling to the top would
-    // undo it. #method names no element, so the About page still starts at the top.
     if (hash && document.getElementById(hash.slice(1))) return;
-    // both pages start at the top: the header is the About page's only nav, so
-    // arriving scrolled halfway down someone else's position hides it
     window.scrollTo(0, 0);
   };
   /** The fixed bar's one input: has the masthead left the top of the window?
@@ -1021,6 +1001,15 @@ class Component extends DCLogic {
       const isV1 = Array.isArray(payload);
       const version = isV1 ? { major: 1, minor: 0 } : parseSchemaVersion(payload.v);
       const data = isV1 ? payload : (payload.rows || []);
+      // `collected` (schema 2.6.0) is the last day the pipeline actually read,
+      // as opposed to `generated`, the moment the file was written. The time
+      // axis runs to it, so the weeks between the newest statement and the end
+      // of collection are drawn as looked-at-and-quiet rather than left off the
+      // chart. Validated rather than trusted: a payload predating 2.6.0 has no
+      // such key, and anything that is not a plain ISO date would land in
+      // string comparisons against month keys and quietly distort the domain.
+      const collected = !isV1 && typeof payload.collected === 'string'
+        && /^\d{4}-\d{2}-\d{2}$/.test(payload.collected) ? payload.collected : null;
       // Shaped in a way this code cannot read: say so rather than rendering a
       // quietly incomplete corpus.
       if (version.major > SCHEMA_SUPPORTED.major) {
@@ -1032,28 +1021,14 @@ class Component extends DCLogic {
       const minorAhead = version.major === SCHEMA_SUPPORTED.major
         && version.minor > SCHEMA_SUPPORTED.minor;
       data.forEach((q, i) => {
-        // Stable, content-addressed id from 2.1.0 on. Older payloads have none,
-        // so fall back to position -- good enough as a render key, but not a
-        // durable reference to a quote, which is the whole point of the field.
-        // `_noLink` is what costs those rows their Share button: a link built
-        // on a position would point at a different statement after the next
-        // export, which is worse than not offering one.
         if (!q.id) { q.id = 'i' + i; q._noLink = true; }
         const rt = q.rt || {};
-        // one flat set of refined keys per quote. `p` (primary), `r` (risks)
-        // and `i` (instruments) overlap -- governance_development shows up in
-        // both r and i -- so matching against the union keeps the Risk area and
-        // Policy instrument filters honest without double-counting.
         q._rk = [...new Set([].concat(rt.p ? [rt.p] : [], rt.r || [], rt.i || []))];
-        // Precomputed haystack. Beyond saving a concat+lowercase of the whole
-        // dataset on every keystroke, this is what finally makes the refined
-        // taxonomy searchable: before, typing "loss of control" matched nothing
-        // even when the tag was sitting on the card.
         q._h = (q.q + ' ' + q.s + ' ' + (q.c || '') + ' ' + (q.r || '') + ' ' + (q.sd || '') + ' '
           + q._rk.map(k => REFLABELS[k] || '').join(' ') + ' '
           + q.t.map(c => (TAGMETA[c] || {}).label || '').join(' ')).toLowerCase();
       });
-      this.setState({ data, loaded: true, minorAhead, options: this.buildOptions(data) });
+      this.setState({ data, loaded: true, minorAhead, collected, options: this.buildOptions(data) });
     }).catch(() => this.setState({ error: true }));
   }
   componentDidUpdate() {
@@ -1065,25 +1040,10 @@ class Component extends DCLogic {
     document.body.style.overflow = this.state.utId ? 'hidden' : '';
     this.revealQuote();
   }
-  /** Open the passage *at* the quote, not at the top of the record.
-   *
-   *  Up to 12,000 characters arrive, and the reader came to see where their
-   *  twenty of them sit in it. Landing at the top of a wall of text and making
-   *  them hunt is the difference between the panel working and the panel being
-   *  a chore -- and the records with no paragraph breaks at all, which is a
-   *  fair number of the written ones, are exactly the ones where hunting is
-   *  hardest. Once per opening: the flag is the id, so a re-render from a
-   *  keystroke behind the dialog cannot yank the passage back. */
   revealQuote() {
     const id = this.state.utId;
     if (!id) { this._utShown = null; return; }
     if (this._utShown === id) return;
-    // The click opens the panel and the shard arrives a moment later, so the
-    // first pass through here has nothing to reveal yet. Spending the flag on
-    // it would mean the pass that *does* have the passage never runs -- which
-    // is exactly the bug this line exists to prevent, and it fails silently, as
-    // a panel that opens at the top of a record it was asked to open in the
-    // middle of.
     const file = utFile(id);
     if (!this.state.utShards[file] && !this.state.utFail[file]) return;
     const box = document.querySelector('.utbox');
@@ -1205,6 +1165,8 @@ class Component extends DCLogic {
     if (st.data.length) {
       const keys = st.data.map(q => q.d.slice(0, 7));
       let lo = keys.reduce((a, b) => a < b ? a : b), hi = keys.reduce((a, b) => a > b ? a : b);
+      const cutoff = st.collected && st.collected.slice(0, 7);
+      if (cutoff && cutoff > hi) hi = cutoff;
       let [y, m] = lo.split('-').map(Number);
       const [hy, hm] = hi.split('-').map(Number);
       while (y < hy || (y === hy && m <= hm)) { months.push(y + '-' + String(m).padStart(2, '0')); m++; if (m > 12) { m = 1; y++; } }
@@ -1222,10 +1184,6 @@ class Component extends DCLogic {
     // --- relevance score + relevance↔recency sort slider ---
     // weighted topic relevance: regulation + 2·agi + 2·x_risk + 3·asi + 3·rsi
     const relScore = q => { const s = q.sc || {}; return (s.regulation || 0) + 2 * (s.agi || 0) + 2 * (s.x_risk || 0) + 3 * (s.asi || 0) + 3 * (s.rsi || 0); };
-    // slider w in [0,1]: 0 = purely most-relevant, 1 = purely most-recent. Blend
-    // normalized relevance with normalized recency so both weigh comparably across
-    // the full date span (the dataset covers ~4 years, so a raw age decay would
-    // bury everything but the last weeks — we scale recency over actual min..max).
     const w = st.sortW ?? 0.5;
     let maxRel = 1, minT = 0, spanT = 1, maxTv = 0;
     if (st.data.length) {
@@ -1259,20 +1217,8 @@ class Component extends DCLogic {
       let options = [], truncated = 0;
       if (isOpen) {
         const matching = optNeedle ? all.filter(o => o.label.toLowerCase().includes(optNeedle)) : all;
-        // Order by what the option would actually yield right now. This is safe
-        // to do live because the counts hold this dimension out of the filter,
-        // so toggling options inside the open popover cannot reorder it under
-        // the cursor -- only a change elsewhere can, and that happens closed.
-        // Ordering by overall frequency instead would open the speaker list on
-        // sixty zeroes the moment a jurisdiction is picked. Sort is stable, so
-        // buildOptions' overall-frequency order breaks the ties.
         const live = o => (facetCount ? facetCount[o.value] || 0 : 0);
         const byLive = matching.slice().sort((a, b) => live(b) - live(a));
-        // Only a truncated list hoists its selections. It has to: a selected
-        // speaker whose live count fell to zero would otherwise sort past the
-        // cut and become impossible to see or switch off. A list that renders
-        // in full needs no hoist, and is better without one -- nothing should
-        // jump out from under the cursor on the click that selects it.
         const ranked = matching.length > OPT_LIMIT
           ? byLive.filter(o => chosen.includes(o.value))
             .concat(byLive.filter(o => !chosen.includes(o.value)))
@@ -1355,10 +1301,6 @@ class Component extends DCLogic {
     const activeT = chartTopics.filter(t => totals[t.id] > 0);
     const visible = activeT.filter(t => !st.hidden[t.id]);
     let ymax = Math.max(5, ...visible.map(t => totals[t.id]));
-    // A 1-2-5 step scaled to the magnitude, aimed at ~6 gridlines whatever the
-    // total is. The old hand-written ladder topped out at a step of 200, so a
-    // Regulation line in the low thousands drew twenty-odd labels stacked into
-    // each other; this keeps the count flat as the axis grows.
     const step = niceStep(ymax);
     ymax = Math.ceil(ymax / step) * step;
     const L = 56, R = 964, T = 16, B = 368;
@@ -1459,19 +1401,27 @@ class Component extends DCLogic {
     }));
     // --- directory ---
     const fmt = d => { const [yy, mm, dd] = d.split('-'); return Number(dd) + ' ' + MN[Number(mm) - 1] + ' ' + yy; };
-    // A permalink (#q=<id>, handed out by each card's Share button) has to open
-    // its statement whatever the reader's filters -- or this page's own
-    // defaults -- would otherwise hide, so the linked quote replaces the
-    // directory listing rather than being filtered inside it. Everything above
-    // the directory goes on describing the filtered corpus: the link is about
-    // one statement, not about a different view of the whole thing.
+    // `dp: 'month'` means the source stated no day, so the day inside `d` is a
+    // placeholder the payload keeps only so everything can sort on one type.
+    // Printing it would invent a precision the record does not have.
+    const fmtQ = q => q.dp === 'month' ? MN[Number(q.d.slice(5, 7)) - 1] + ' ' + q.d.slice(0, 4) : fmt(q.d);
+    // `cu` is where a reader verifies the quote; `u` is where we fetched it, and
+    // for a bulk-archive source that is a zip download. Link `cu` when it exists.
+    const srcOf = q => q.cu || q.u;
+    // Day 0 of the following month is the last day of this one, so this says
+    // whether collection stopped mid-month -- in which case the final month on
+    // the axis is a partial one and the line across it should not be read as a
+    // month's worth of statements.
+    const partialTail = st.collected
+      && Number(st.collected.slice(8, 10))
+        < new Date(Date.UTC(Number(st.collected.slice(0, 4)), Number(st.collected.slice(5, 7)), 0)).getUTCDate();
+    const collectedNote = st.collected
+      ? 'Sources read through ' + fmt(st.collected) + ' — the time axis stops there'
+        + (partialTail ? ', so its last month is only collected up to that day' : '') + '.'
+      : '';
     const focusQ = st.focusId ? st.data.find(q => q.id === st.focusId) : null;
     const dirList = st.focusId ? (focusQ ? [focusQ] : []) : dirSorted;
     const clearFocus = () => {
-      // replaceState rather than assigning location.hash: it leaves neither a
-      // bare "#" in the address bar nor an extra entry to back out of. It fires
-      // no hashchange either, so syncRoute never runs and the state is cleared
-      // here by hand.
       history.replaceState(null, '', location.pathname + location.search);
       this.setState({ focusId: null });
     };
@@ -1489,14 +1439,8 @@ class Component extends DCLogic {
       // An `nv` row pasted elsewhere loses the page's typography along with the
       // missing marks that signalled the caveat, so the note travels in the text.
       const plain = showQuote(q.q, 'en', q.nv) + (q.nv ? ' ' + NVNOTE : '')
-        + ' — ' + q.s + (q.r ? ', ' + q.r : '') + ' (' + fmt(q.d) + ')\n' + q.u;
+        + ' — ' + q.s + (q.r ? ', ' + q.r : '') + ' (' + fmtQ(q) + ')\n' + srcOf(q);
       const flashed = k => st.flash === q.id + '|' + k;
-      // Clicking the quote opens the passage it was cut from -- the affordance
-      // a reader reaches for before they look for a button. Two things it must
-      // not do: swallow the source link inside the blockquote, and fire at the
-      // end of a drag that was selecting the words to copy them. Both are
-      // decided here rather than by narrowing the target, because the target is
-      // the point: the whole quote is what invites the click.
       const openUt = e => {
         if (!q.ul) return;
         if (e && e.target && e.target.closest && e.target.closest('a')) return;
@@ -1505,15 +1449,8 @@ class Component extends DCLogic {
         this.openUtterance(q.id);
       };
       const shareSheet = () => {
-        // On a phone "share" means the OS sheet, which can hand the link to
-        // whichever app the reader had in mind. A desktop browser's sheet
-        // mostly cannot, so there the useful thing is the link on the
-        // clipboard. A dismissed sheet rejects, and is not an error.
         navigator.share({ title: q.s + ' on AI policy', url: link }).catch(() => {});
       };
-      // every tag is a filter shortcut: clicking one adds it to the matching
-      // dimension, which is how a reader gets from "this quote is interesting"
-      // to "show me the others like it"
       const coarse = c => ({ ...TAGMETA[c], onClick: () => focusSel('topic', c), title: 'Show only topic: ' + TAGMETA[c].label });
       let tags = q.t.filter(c => showReg || c !== 'regulation' || q.t.length === 1).map(coarse).filter(t => t.label);
       if (q.rt) {
@@ -1535,7 +1472,7 @@ class Component extends DCLogic {
         }));
       }
       return {
-        eq: showQuote(q.q, 'en', q.nv), s: q.s, role: q.r || null, c: q.c, u: q.u, o: q.o,
+        eq: showQuote(q.q, 'en', q.nv), s: q.s, role: q.r || null, c: q.c, u: srcOf(q), o: q.o,
         sl: q.sl || null, hasProfile: !!q.sl, noProfile: !q.sl,
         sd: q.sd || null, hasDesc: !!q.sd,
         // Portrait (schema 2.2.0). Roughly a third of rows have none -- an
@@ -1548,7 +1485,7 @@ class Component extends DCLogic {
         initials: monogram(q.s),
         oq: q.o ? showQuote(q.o, q.l, q.nv) : '', lang: q.l,
         provNote: provNote(q),
-        flag: jm.flag, fw: flagW(jm, 15, 11), jname: jm.label, dateFmt: fmt(q.d), tags,
+        flag: jm.flag, fw: flagW(jm, 15, 11), jname: jm.label, dateFmt: fmtQ(q), tags,
         stance: q.st, hasCtx: !!q.c, hasOrig: !!q.o, noOrig: !q.o,
         onCopy: () => this.copyText(plain).then(
           () => this.flash(q.id, 'copied'), () => this.flash(q.id, 'copyfail')),
@@ -1602,14 +1539,11 @@ class Component extends DCLogic {
       }
       ut = {
         title: 'The passage around a statement by ' + utQ.s,
-        s: utQ.s, role: utQ.r || null, hasRole: !!utQ.r, dateFmt: fmt(utQ.d), u: utQ.u,
+        s: utQ.s, role: utQ.r || null, hasRole: !!utQ.r, dateFmt: fmtQ(utQ), u: srcOf(utQ),
         flag: jm.flag, fw: flagW(jm, 15, 11), jname: jm.label,
         occasion: (rec && rec.sc) || null, hasOccasion: !!(rec && rec.sc),
         lang: (rec && rec.l) || null,
         loading: !recs && !st.utFail[file],
-        // A shard that arrived without this id is the same dead end as one that
-        // never arrived at all, and gets the same answer: the source link. It
-        // means the payload and the sidecar came from different exports.
         failed: !!st.utFail[file] || !!(recs && !rec),
         ready: !!rec,
         html: rec ? { __html: utHtml(rec) } : null,
@@ -1629,11 +1563,6 @@ class Component extends DCLogic {
     const onMethod = st.method;
     return {
       isMethod: onMethod, isMain: !onMethod, ut,
-      // the standfirst rides with the title on both pages -- it says what the
-      // whole thing is, which is if anything more use next to the method notes
-      // than next to the tracker they describe
-      // visibility, not display: the inactive one keeps its space so the pair's
-      // slot is one width across both pages (and stays untabbable either way)
       headAbout: onMethod ? 'hidden' : 'visible',
       headBack: onMethod ? 'visible' : 'hidden',
       // the fixed bar is laid out at all times and only moved into view, so the
@@ -1670,6 +1599,7 @@ class Component extends DCLogic {
       shadeLW: (Xov(r0) / 980 * 100).toFixed(2) + '%', shadeRW: ((980 - Xov(r1)) / 980 * 100).toFixed(2) + '%',
       brushDown0: brushDown(0), brushDown1: brushDown(1),
       brushFromLabel: months.length ? fmtMon(r0) : '', brushToLabel: months.length ? fmtMon(r1) : '',
+      collectedNote,
       onChartLeave: () => this.setState({ tip: null }),
       voices, speakerActive: !!sets.speaker.size, clearSpeaker: () => setSel('speaker', []),
       speakerBanner: sets.speaker.size ? sel.speaker.join(', ') : null,
@@ -1681,10 +1611,6 @@ class Component extends DCLogic {
       onSortW: e => { const v = Number(e.target.value);
         this.setState({ sortW: Math.abs(v - 50) <= 6 ? 0.5 : v / 100, limit: 0 }); },
       sortLabel: w <= 0.02 ? 'Relevant' : w >= 0.98 ? 'Recent' : '',
-      // Numeric twin of the brush handles. The range must stay at least two
-      // months wide (the chart needs a span to draw across), so picking a
-      // first month past the current last one pushes the other end along
-      // instead of refusing the click.
       monthOpts: months.map(k => ({ v: k })),
       fromMonth: months[r0] || '', toMonth: months[r1] || '',
       onFromMonth: e => { const i = midx[e.target.value]; if (i == null) return;
