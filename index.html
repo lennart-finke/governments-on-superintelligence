@@ -303,10 +303,6 @@ img[src*="%E9%83%AD%E5%9C%8B%E6%96%87%E5%A7%94%E5%93%A1"]{object-fit:contain !im
         <div onPointerDown="{{ brushDown1 }}" style="position:absolute;top:0;bottom:0;width:20px;transform:translateX(-50%);cursor:ew-resize;display:flex;align-items:center;justify-content:center;touch-action:none;left:{{ brushX1 }}"><div style="width:5px;height:70%;background:#011f54;box-shadow:0 0 0 2px #ffffff"></div></div>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:#374151;margin-top:6px"><span>{{ brushFromLabel }}</span><span>{{ brushToLabel }}</span></div>
-      <!-- Where collection stopped. Without it the end of the axis is
-           ambiguous: the reader cannot tell a quiet fortnight from an
-           uncollected one, and neither can a flat cumulative line. -->
-      <sc-if value="{{ collectedNote }}"><p style="margin:9px 0 0;font-size:12px;color:#6b7280">{{ collectedNote }}</p></sc-if>
     </div>
     <aside class="vocal-panel">
       <h2 style="font-family:'Varela',system-ui,sans-serif;font-size:23px;font-weight:700;margin:0 0 4px">Most vocal</h2>
@@ -1415,29 +1411,16 @@ class Component extends DCLogic {
     const partialTail = st.collected
       && Number(st.collected.slice(8, 10))
         < new Date(Date.UTC(Number(st.collected.slice(0, 4)), Number(st.collected.slice(5, 7)), 0)).getUTCDate();
-    const collectedNote = st.collected
-      ? 'Sources read through ' + fmt(st.collected) + ' — the time axis stops there'
-        + (partialTail ? ', so its last month is only collected up to that day' : '') + '.'
-      : '';
     const focusQ = st.focusId ? st.data.find(q => q.id === st.focusId) : null;
     const dirList = st.focusId ? (focusQ ? [focusQ] : []) : dirSorted;
     const clearFocus = () => {
       history.replaceState(null, '', location.pathname + location.search);
       this.setState({ focusId: null });
     };
-    // Regulation sits on 4,217 of ~4,900 quotes, so the chip carries no signal
-    // while the reader is looking at the frontier topics -- it only earns its
-    // place once Regulation is itself selected, or is all a quote has.
     const showReg = !sets.topic.size || sets.topic.has('regulation');
     const quotes = dirList.slice(0, limit).map(q => {
       const jm = jentry(q.j);
-      // Built off the page's own address so it keeps working if the site moves;
-      // the hash is exactly what syncRoute reads back.
       const link = location.origin + location.pathname + '#q=' + q.id;
-      // What someone pasting this into a document actually needs: the words,
-      // who said them and when, and where to check them.
-      // An `nv` row pasted elsewhere loses the page's typography along with the
-      // missing marks that signalled the caveat, so the note travels in the text.
       const plain = showQuote(q.q, 'en', q.nv) + (q.nv ? ' ' + NVNOTE : '')
         + ' — ' + q.s + (q.r ? ', ' + q.r : '') + ' (' + fmtQ(q) + ')\n' + srcOf(q);
       const flashed = k => st.flash === q.id + '|' + k;
@@ -1599,7 +1582,6 @@ class Component extends DCLogic {
       shadeLW: (Xov(r0) / 980 * 100).toFixed(2) + '%', shadeRW: ((980 - Xov(r1)) / 980 * 100).toFixed(2) + '%',
       brushDown0: brushDown(0), brushDown1: brushDown(1),
       brushFromLabel: months.length ? fmtMon(r0) : '', brushToLabel: months.length ? fmtMon(r1) : '',
-      collectedNote,
       onChartLeave: () => this.setState({ tip: null }),
       voices, speakerActive: !!sets.speaker.size, clearSpeaker: () => setSel('speaker', []),
       speakerBanner: sets.speaker.size ? sel.speaker.join(', ') : null,
